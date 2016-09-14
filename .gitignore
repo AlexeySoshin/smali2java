@@ -1,0 +1,11 @@
+
+.idea/
+
+.DS_Store
+
+
+com/checker/CheckResult.smal
+
+com/checker/StatusChecker.smali
+
+smali2java.iml
