@@ -147,6 +147,29 @@ func invokeStatic(javaFile *JavaFile, splitLine []string) {
 	javaFile.lines = append(javaFile.lines, line)
 }
 
+func staticGet(javaFile *JavaFile, splitLine []string) {
+
+	//"sget v2, Lcom/checker/StatusChecker;->robotRadiusSelect:I"
+
+	//"v2 = com.checker.StatusChecker.robotRadiusSelect()
+
+	variableName := splitLine[1]
+
+	// Strip comma
+	variableName = variableName[:len(variableName) - 1]
+
+	classNameAndMethod := strings.Split(splitLine[2], "->")
+
+	className := getClassName(classNameAndMethod[0])
+
+	methodNameAndReturnValue := strings.Split(classNameAndMethod[1], ":")
+
+	methodName := methodNameAndReturnValue[0]
+
+	line := Line{[]string{variableName, "=", className, ".", methodName, "();"}}
+	javaFile.lines = append(javaFile.lines, line)
+}
+
 func finalString(javaFile *JavaFile, splitLine []string) {
 
 	variableName := splitLine[1]

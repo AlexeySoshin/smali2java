@@ -89,3 +89,20 @@ func TestInvokeStatic(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestStaticGet(t *testing.T) {
+	javaFile := JavaFile{}
+
+	input := "sget v2, Lcom/checker/StatusChecker;->robotRadiusSelect:I"
+
+	expectedOutput := "v2 = com.checker.StatusChecker . robotRadiusSelect ();"
+
+	staticGet(&javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.lines[0].l, " ")
+
+	if (expectedOutput != output) {
+		log.Printf("Expected \n%s\n to return \n%s\n got \n%s\n", input, expectedOutput, output)
+		t.Fail()
+	}
+}
