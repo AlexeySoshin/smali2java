@@ -116,12 +116,35 @@ func convertLine(javaFile *JavaFile, line string) {
 			parseSuper(javaFile, splitLine)
 		case "const-string":
 			finalString(javaFile, splitLine)
+		case "invoke-static":
+			invokeStatic(javaFile, splitLine)
 		default:
 			line := Line{append([]string{"//"}, splitLine...)}
 			javaFile.lines = append(javaFile.lines, line)
 		}
 	}
 
+}
+
+func invokeStatic(javaFile *JavaFile, splitLine []string) {
+	//"{p0}, Lcom/checker/HttpRequest;->post(Ljava/lang/CharSequence;)Lcom/checker/HttpRequest"
+	// com.checker.HttpRequest.post( p0 )
+
+	variables := splitLine[1]
+	variables = variables[1:len(variables) - 2]
+
+	classNameAndMethod := splitLine[2]
+
+	classNameAndMethodSplit := strings.Split(classNameAndMethod, "->")
+
+	methodAndArgumentsSplit := strings.Split(classNameAndMethodSplit[1], "(")
+
+	className := getClassName(classNameAndMethodSplit[0])
+
+	method := methodAndArgumentsSplit[0]
+
+	line := Line{[]string{className, ".", method, "(", variables, ");"}}
+	javaFile.lines = append(javaFile.lines, line)
 }
 
 func finalString(javaFile *JavaFile, splitLine []string) {
@@ -208,6 +231,8 @@ func getClassName(jvmName string) string {
 			return "Float"
 		case 'D':
 			return "Double"
+		case 'V':
+			return "void"
 		default:
 			return "Object"
 		}
