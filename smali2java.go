@@ -90,53 +90,75 @@ func convertLine(javaFile *JavaFile, line string) {
 
 	if (len(splitLine) == 0) {
 
-	} else if (splitLine[0] == ".class") {
-		accessor := splitLine[1]
-		name := getClassName(splitLine[2])
-		line := Line{[]string{accessor, "class", name, "{"}}
-		javaFile.lines = append(javaFile.lines, line)
-		javaFile.className = name
-	} else if (splitLine[0] == "return-void") {
-		line := Line{[]string{"return;"}}
-		javaFile.lines = append(javaFile.lines, line)
-	} else if (splitLine[0] == ".end") {
-		line := Line{[]string{"}"}}
-		javaFile.lines = append(javaFile.lines, line)
-	} else if (splitLine[0] == ".method") {
-		parseMethod(javaFile, splitLine)
-	} else if (splitLine[0] == ".field") {
-		parseField(javaFile, splitLine)
-	} else if (splitLine[0] == ".super") {
-		parseSuper(javaFile, splitLine)
 	} else {
-		line := Line{append([]string{"//"}, splitLine...)}
-		javaFile.lines = append(javaFile.lines, line)
+
+		opcode := splitLine[0]
+
+		switch (opcode) {
+		case ".class":
+			accessor := splitLine[1]
+			name := getClassName(splitLine[2])
+			line := Line{[]string{accessor, "class", name, "{"}}
+			javaFile.lines = append(javaFile.lines, line)
+			javaFile.className = name
+		case "return-void":
+			line := Line{[]string{"return;"}}
+			javaFile.lines = append(javaFile.lines, line)
+
+		case ".end":
+			line := Line{[]string{"}"}}
+			javaFile.lines = append(javaFile.lines, line)
+		case ".method":
+			parseMethod(javaFile, splitLine)
+		case ".field":
+			parseField(javaFile, splitLine)
+		case ".super":
+			parseSuper(javaFile, splitLine)
+		case "const-string":
+			finalString(javaFile, splitLine)
+		default:
+			line := Line{append([]string{"//"}, splitLine...)}
+			javaFile.lines = append(javaFile.lines, line)
+		}
 	}
 
+}
+
+func finalString(javaFile *JavaFile, splitLine []string) {
+
+	variableName := splitLine[1]
+	variableName = variableName[:len(variableName) - 1]
+	variableValue := splitLine[2]
+	line := Line{[]string{"final String", variableName, "=", variableValue, ";"}}
+	javaFile.lines = append(javaFile.lines, line)
 }
 
 func parseMethod(javaFile *JavaFile, splitLine []string) {
 	accessor := splitLine[1]
 	static := ""
-	methodName := ""
+	methodNameAndReturnType := ""
+	method := ""
 
 	if (splitLine[2] == "static") {
 		static = "static"
-		methodName = splitLine[3]
+		methodNameAndReturnType = splitLine[3]
 	} else {
-		methodName = splitLine[2]
+		methodNameAndReturnType = splitLine[2]
 	}
 
 	returnValue := ""
 	arguments := make([]string, 0)
 
-	if (methodName == "constructor") {
-		methodName = javaFile.className
+	if (methodNameAndReturnType == "constructor") {
+		method = javaFile.className
 	} else {
-
+		methodAndReturnType := strings.Split(methodNameAndReturnType, ")")
+		method = methodAndReturnType[0]
+		method = method[:len(method) - 1]
+		returnValue = getClassName(methodAndReturnType[1])
 	}
 
-	line := Line{[]string{accessor, static, returnValue, methodName, "(", strings.Join(arguments, ","), ")", "{"}}
+	line := Line{[]string{accessor, static, returnValue, method, "(", strings.Join(arguments, ","), ")", "{"}}
 	javaFile.lines = append(javaFile.lines, line)
 }
 
@@ -178,12 +200,22 @@ func getClassName(jvmName string) string {
 		switch (className[0]) {
 		case 'I':
 			return "Integer"
+		case 'Z':
+			return "Boolean"
+		case 'J':
+			return "Long"
+		case 'F':
+			return "Float"
+		case 'D':
+			return "Double"
 		default:
 			return "Object"
 		}
 
 	} else {
-		return className[:len(className) - 1]
+
+		joinedName := strings.Join(splitJvmName, ".")
+		return joinedName[1:len(joinedName) - 1]
 	}
 
 }
