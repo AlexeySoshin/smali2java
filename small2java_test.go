@@ -73,6 +73,22 @@ func TestMethodStatic(t *testing.T) {
 	}
 }
 
+func TestMethodStaticWithParameters(t *testing.T) {
+	javaFile := JavaFile{}
+	input := ".method private static readUrl(Ljava/lang/String;)Ljava/lang/String;"
+
+	expectedOutput := "private static java.lang.String readUrl ( java.lang.String p0  ) {"
+
+	parseMethod(&javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.lines[0].l, " ")
+
+	if (expectedOutput != output) {
+		log.Printf("Expected \n%s\n to return \n%s\n got \n%s\n", input, expectedOutput, output)
+		t.Fail()
+	}
+}
+
 func TestInvokeStatic(t *testing.T) {
 	javaFile := JavaFile{}
 

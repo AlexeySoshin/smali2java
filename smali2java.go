@@ -118,12 +118,27 @@ func convertLine(javaFile *JavaFile, line string) {
 			finalString(javaFile, splitLine)
 		case "invoke-static":
 			invokeStatic(javaFile, splitLine)
+		case "return-object":
+			returnObject(javaFile, splitLine)
 		default:
 			line := Line{append([]string{"//"}, splitLine...)}
 			javaFile.lines = append(javaFile.lines, line)
 		}
 	}
 
+}
+
+func returnObject(javaFile *JavaFile, splitLine []string) {
+
+	// Strip comma
+	variableName := parseVariableName(splitLine[1])
+
+	line := Line{[]string{"return ", variableName}}
+	javaFile.lines = append(javaFile.lines, line)
+}
+
+func parseVariableName(variableName string) string {
+	return variableName[:len(variableName) - 1]
 }
 
 func invokeStatic(javaFile *JavaFile, splitLine []string) {
@@ -149,14 +164,8 @@ func invokeStatic(javaFile *JavaFile, splitLine []string) {
 
 func staticGet(javaFile *JavaFile, splitLine []string) {
 
-	//"sget v2, Lcom/checker/StatusChecker;->robotRadiusSelect:I"
-
-	//"v2 = com.checker.StatusChecker.robotRadiusSelect()
-
-	variableName := splitLine[1]
-
 	// Strip comma
-	variableName = variableName[:len(variableName) - 1]
+	variableName := parseVariableName(splitLine[1])
 
 	classNameAndMethod := strings.Split(splitLine[2], "->")
 
@@ -199,8 +208,9 @@ func parseMethod(javaFile *JavaFile, splitLine []string) {
 		method = javaFile.className
 	} else {
 		methodAndReturnType := strings.Split(methodNameAndReturnType, ")")
-		method = methodAndReturnType[0]
-		method = method[:len(method) - 1]
+		methodAndArguments := strings.Split(methodAndReturnType[0], "(")
+		method = methodAndArguments[0]
+
 		returnValue = getClassName(methodAndReturnType[1])
 	}
 
