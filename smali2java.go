@@ -10,6 +10,8 @@ import (
 	"strings"
 	"sync"
 	"github.com/alexeysoshin/smali2java/java"
+	"github.com/alexeysoshin/smali2java/java/types"
+	"github.com/alexeysoshin/smali2java/smali"
 )
 
 const smaliExtension = ".smali"
@@ -94,30 +96,30 @@ func convertLine(javaFile *JavaFile, line string) {
 		opcode := splitLine[0]
 
 		switch opcode {
-		case ".class":
+		case smali.Class:
 			accessor := splitLine[1]
 			name := getClassName(splitLine[2])
-			line := []string{accessor, "class", name, "{"}
+			line := []string{accessor, java.Class, name, "{"}
 			javaFile.lines = append(javaFile.lines, line)
 			javaFile.className = name
-		case "return-void":
+		case smali.ReturnVoid:
 			line := []string{"return;"}
 			javaFile.lines = append(javaFile.lines, line)
 
-		case ".end":
+		case smali.End:
 			line := []string{"}"}
 			javaFile.lines = append(javaFile.lines, line)
-		case ".method":
+		case smali.Method:
 			parseMethod(javaFile, splitLine)
-		case ".field":
+		case smali.Field:
 			parseField(javaFile, splitLine)
-		case ".super":
+		case smali.Super:
 			parseSuper(javaFile, splitLine)
-		case "const-string":
+		case smali.ConstString:
 			finalString(javaFile, splitLine)
-		case "invoke-static":
+		case smali.InvokeStatic:
 			invokeStatic(javaFile, splitLine)
-		case "return-object":
+		case smali.ReturnObject:
 			returnObject(javaFile, splitLine)
 		default:
 			line := append([]string{"//"}, splitLine...)
@@ -193,8 +195,8 @@ func parseMethod(javaFile *JavaFile, splitLine []string) {
 	smaliMethod := ""
 	method := ""
 
-	if splitLine[2] == "static" {
-		static = "static"
+	if splitLine[2] == java.Static {
+		static = java.Static
 		smaliMethod = splitLine[3]
 	} else {
 		smaliMethod = splitLine[2]
@@ -229,8 +231,8 @@ func parseMethod(javaFile *JavaFile, splitLine []string) {
 func parseField(javaFile *JavaFile, splitLine []string) {
 	static := ""
 	memberAndClass := make([]string, 0)
-	if splitLine[2] == "static" {
-		static = "static"
+	if splitLine[2] == java.Static {
+		static = java.Static
 		memberAndClass = strings.Split(splitLine[3], ":")
 	} else {
 		memberAndClass = strings.Split(splitLine[2], ":")
@@ -246,7 +248,7 @@ func parseField(javaFile *JavaFile, splitLine []string) {
 func parseSuper(javaFile *JavaFile, splitLine []string) {
 	super := getClassName(splitLine[1])
 
-	if super != "Object" {
+	if super != types.Object {
 
 		classDeclarationLine := javaFile.lines[len(javaFile.lines)-1]
 		accessor := classDeclarationLine[0]
@@ -263,19 +265,19 @@ func getClassName(jvmName string) string {
 	if len(className) == 1 {
 		switch className[0] {
 		case 'I':
-			return "Integer"
+			return types.Integer
 		case 'Z':
-			return "Boolean"
+			return types.Boolean
 		case 'J':
-			return "Long"
+			return types.Long
 		case 'F':
-			return "Float"
+			return types.Float
 		case 'D':
-			return "Double"
+			return types.Double
 		case 'V':
-			return "void"
+			return types.Void
 		default:
-			return "Object"
+			return types.Object
 		}
 
 	} else {

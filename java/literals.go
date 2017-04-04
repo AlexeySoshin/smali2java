@@ -1,4 +1,7 @@
 package java
 
-const Class = "class"
-const Extends = "extends"
+const (
+	Class = "class"
+	Extends = "extends"
+	Static = "static"
+)

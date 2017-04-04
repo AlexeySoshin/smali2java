@@ -103,3 +103,11 @@ func TestStaticGet(t *testing.T) {
 
 	assert.Equal(t, expectedOutput, output)
 }
+
+func TestReturnObject(t *testing.T) {
+
+}
+
+func TestParseSuper(t *testing.T) {
+
+}
