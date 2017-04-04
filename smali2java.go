@@ -97,11 +97,7 @@ func convertLine(javaFile *JavaFile, line string) {
 
 		switch opcode {
 		case smali.Class:
-			accessor := splitLine[1]
-			name := getClassName(splitLine[2])
-			line := []string{accessor, java.Class, name, "{"}
-			javaFile.lines = append(javaFile.lines, line)
-			javaFile.className = name
+			(&ClassParser{}).Parse(javaFile, splitLine)
 		case smali.ReturnVoid:
 			line := []string{"return;"}
 			javaFile.lines = append(javaFile.lines, line)
@@ -110,7 +106,7 @@ func convertLine(javaFile *JavaFile, line string) {
 			line := []string{"}"}
 			javaFile.lines = append(javaFile.lines, line)
 		case smali.Method:
-			parseMethod(javaFile, splitLine)
+			(&MethodParser{}).Parse(javaFile, splitLine)
 		case smali.Field:
 			parseField(javaFile, splitLine)
 		case smali.Super:
@@ -189,44 +185,7 @@ func finalString(javaFile *JavaFile, splitLine []string) {
 	javaFile.lines = append(javaFile.lines, line)
 }
 
-func parseMethod(javaFile *JavaFile, splitLine []string) {
-	accessor := splitLine[1]
-	static := ""
-	smaliMethod := ""
-	method := ""
 
-	if splitLine[2] == java.Static {
-		static = java.Static
-		smaliMethod = splitLine[3]
-	} else {
-		smaliMethod = splitLine[2]
-	}
-
-	returnValue := ""
-	arguments := []string{}
-
-	if smaliMethod == "constructor" {
-		method = javaFile.className
-	} else {
-		argumentsIndex := strings.Index(smaliMethod, "(")
-		returnValueIndex := strings.Index(smaliMethod, ")")
-		method = smaliMethod[0:argumentsIndex]
-		argumentsString := smaliMethod[argumentsIndex+1:returnValueIndex]
-		returnValue = getClassName(smaliMethod[returnValueIndex+1:])
-
-		if len(argumentsString) > 0 {
-			smaliArguments := strings.Split(argumentsString, ",")
-
-			for i, arg := range smaliArguments {
-				arguments = append(arguments, fmt.Sprintf("%s p%d", getClassName(arg), i))
-			}
-		}
-
-	}
-
-	line := []string{accessor, static, returnValue, method, "(", strings.Join(arguments, ","), ")", "{"}
-	javaFile.lines = append(javaFile.lines, line)
-}
 
 func parseField(javaFile *JavaFile, splitLine []string) {
 	static := ""
