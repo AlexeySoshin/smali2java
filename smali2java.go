@@ -1,17 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"flag"
-	"path/filepath"
-	"os"
 	"fmt"
 	"log"
-	"bufio"
-	"sync"
+	"os"
+	"path/filepath"
 	"strings"
+	"sync"
+	"github.com/alexeysoshin/smali2java/java"
 )
 
-const SMALI_EXTENSION = ".smali"
+const smaliExtension = ".smali"
 
 var wg = sync.WaitGroup{}
 
@@ -28,7 +29,7 @@ func walk(path string, f os.FileInfo, err error) error {
 
 	if f.IsDir() {
 		//log.Printf("Skipping directory: %s\n", path)
-	} else if filepath.Ext(path) != SMALI_EXTENSION {
+	} else if filepath.Ext(path) != smaliExtension {
 		//log.Printf("Not a smali file, skipping: %s\n", path)
 	} else {
 		convertSmali(path)
@@ -69,13 +70,11 @@ func convertSmali(path string) {
 
 func printJavaFile(javaFile JavaFile) {
 	for _, line := range javaFile.lines {
-		fmt.Println(strings.Join(line.l, " "))
+		fmt.Println(strings.Join(line, " "))
 	}
 }
 
-type Line struct {
-	l []string
-}
+type Line []string
 
 type JavaFile struct {
 	lines      []Line
@@ -88,25 +87,25 @@ type JavaFile struct {
 func convertLine(javaFile *JavaFile, line string) {
 	splitLine := strings.Fields(line)
 
-	if (len(splitLine) == 0) {
+	if len(splitLine) == 0 {
 
 	} else {
 
 		opcode := splitLine[0]
 
-		switch (opcode) {
+		switch opcode {
 		case ".class":
 			accessor := splitLine[1]
 			name := getClassName(splitLine[2])
-			line := Line{[]string{accessor, "class", name, "{"}}
+			line := []string{accessor, "class", name, "{"}
 			javaFile.lines = append(javaFile.lines, line)
 			javaFile.className = name
 		case "return-void":
-			line := Line{[]string{"return;"}}
+			line := []string{"return;"}
 			javaFile.lines = append(javaFile.lines, line)
 
 		case ".end":
-			line := Line{[]string{"}"}}
+			line := []string{"}"}
 			javaFile.lines = append(javaFile.lines, line)
 		case ".method":
 			parseMethod(javaFile, splitLine)
@@ -121,7 +120,7 @@ func convertLine(javaFile *JavaFile, line string) {
 		case "return-object":
 			returnObject(javaFile, splitLine)
 		default:
-			line := Line{append([]string{"//"}, splitLine...)}
+			line := append([]string{"//"}, splitLine...)
 			javaFile.lines = append(javaFile.lines, line)
 		}
 	}
@@ -133,12 +132,12 @@ func returnObject(javaFile *JavaFile, splitLine []string) {
 	// Strip comma
 	variableName := parseVariableName(splitLine[1])
 
-	line := Line{[]string{"return ", variableName}}
+	line := []string{"return ", variableName}
 	javaFile.lines = append(javaFile.lines, line)
 }
 
 func parseVariableName(variableName string) string {
-	return variableName[:len(variableName) - 1]
+	return variableName[:len(variableName)-1]
 }
 
 func invokeStatic(javaFile *JavaFile, splitLine []string) {
@@ -146,7 +145,7 @@ func invokeStatic(javaFile *JavaFile, splitLine []string) {
 	// com.checker.HttpRequest.post( p0 )
 
 	variables := splitLine[1]
-	variables = variables[1:len(variables) - 2]
+	variables = variables[1 : len(variables)-2]
 
 	classNameAndMethod := splitLine[2]
 
@@ -158,7 +157,7 @@ func invokeStatic(javaFile *JavaFile, splitLine []string) {
 
 	method := methodAndArgumentsSplit[0]
 
-	line := Line{[]string{className, ".", method, "(", variables, ");"}}
+	line := []string{className, ".", method, "(", variables, ");"}
 	javaFile.lines = append(javaFile.lines, line)
 }
 
@@ -175,53 +174,62 @@ func staticGet(javaFile *JavaFile, splitLine []string) {
 
 	methodName := methodNameAndReturnValue[0]
 
-	line := Line{[]string{variableName, "=", className, ".", methodName, "();"}}
+	line := []string{variableName, "=", className, ".", methodName, "();"}
 	javaFile.lines = append(javaFile.lines, line)
 }
 
 func finalString(javaFile *JavaFile, splitLine []string) {
 
 	variableName := splitLine[1]
-	variableName = variableName[:len(variableName) - 1]
+	variableName = variableName[:len(variableName)-1]
 	variableValue := splitLine[2]
-	line := Line{[]string{"final String", variableName, "=", variableValue, ";"}}
+	line := []string{"final String", variableName, "=", variableValue, ";"}
 	javaFile.lines = append(javaFile.lines, line)
 }
 
 func parseMethod(javaFile *JavaFile, splitLine []string) {
 	accessor := splitLine[1]
 	static := ""
-	methodNameAndReturnType := ""
+	smaliMethod := ""
 	method := ""
 
-	if (splitLine[2] == "static") {
+	if splitLine[2] == "static" {
 		static = "static"
-		methodNameAndReturnType = splitLine[3]
+		smaliMethod = splitLine[3]
 	} else {
-		methodNameAndReturnType = splitLine[2]
+		smaliMethod = splitLine[2]
 	}
 
 	returnValue := ""
-	arguments := make([]string, 0)
+	arguments := []string{}
 
-	if (methodNameAndReturnType == "constructor") {
+	if smaliMethod == "constructor" {
 		method = javaFile.className
 	} else {
-		methodAndReturnType := strings.Split(methodNameAndReturnType, ")")
-		methodAndArguments := strings.Split(methodAndReturnType[0], "(")
-		method = methodAndArguments[0]
+		argumentsIndex := strings.Index(smaliMethod, "(")
+		returnValueIndex := strings.Index(smaliMethod, ")")
+		method = smaliMethod[0:argumentsIndex]
+		argumentsString := smaliMethod[argumentsIndex+1:returnValueIndex]
+		returnValue = getClassName(smaliMethod[returnValueIndex+1:])
 
-		returnValue = getClassName(methodAndReturnType[1])
+		if len(argumentsString) > 0 {
+			smaliArguments := strings.Split(argumentsString, ",")
+
+			for i, arg := range smaliArguments {
+				arguments = append(arguments, fmt.Sprintf("%s p%d", getClassName(arg), i))
+			}
+		}
+
 	}
 
-	line := Line{[]string{accessor, static, returnValue, method, "(", strings.Join(arguments, ","), ")", "{"}}
+	line := []string{accessor, static, returnValue, method, "(", strings.Join(arguments, ","), ")", "{"}
 	javaFile.lines = append(javaFile.lines, line)
 }
 
 func parseField(javaFile *JavaFile, splitLine []string) {
 	static := ""
 	memberAndClass := make([]string, 0)
-	if (splitLine[2] == "static") {
+	if splitLine[2] == "static" {
 		static = "static"
 		memberAndClass = strings.Split(splitLine[3], ":")
 	} else {
@@ -231,29 +239,29 @@ func parseField(javaFile *JavaFile, splitLine []string) {
 	accessor := splitLine[1]
 	className := getClassName(memberAndClass[1])
 	memberName := memberAndClass[0]
-	line := Line{[]string{accessor, static, className, memberName, ";"}}
+	line := []string{accessor, static, className, memberName, ";"}
 	javaFile.lines = append(javaFile.lines, line)
 }
 
 func parseSuper(javaFile *JavaFile, splitLine []string) {
 	super := getClassName(splitLine[1])
 
-	if (super != "Object") {
+	if super != "Object" {
 
-		classDeclarationLine := javaFile.lines[len(javaFile.lines) - 1].l
+		classDeclarationLine := javaFile.lines[len(javaFile.lines)-1]
 		accessor := classDeclarationLine[0]
 		name := classDeclarationLine[2]
-		javaFile.lines[len(javaFile.lines) - 1] = Line{[]string{accessor, "class", name, "extends", super}}
+		javaFile.lines[len(javaFile.lines)-1] = []string{accessor, java.Class, name, java.Extends, super}
 	}
 }
 
 func getClassName(jvmName string) string {
 	splitJvmName := strings.Split(jvmName, "/")
 
-	className := splitJvmName[len(splitJvmName) - 1]
+	className := splitJvmName[len(splitJvmName)-1]
 
-	if (len(className) == 1) {
-		switch (className[0]) {
+	if len(className) == 1 {
+		switch className[0] {
 		case 'I':
 			return "Integer"
 		case 'Z':
@@ -273,7 +281,7 @@ func getClassName(jvmName string) string {
 	} else {
 
 		joinedName := strings.Join(splitJvmName, ".")
-		return joinedName[1:len(joinedName) - 1]
+		return joinedName[1 : len(joinedName)-1]
 	}
 
 }

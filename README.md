@@ -15,3 +15,6 @@ go build
 ```
 smali2java <smali_directory>
 ```
+
+## License
+MIT
