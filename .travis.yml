@@ -1,8 +1,10 @@
 language: go
 
 install:
- - go get
+ - go get github.com/Masterminds/glide
 go:
  - 1.7
 script:
+ - glide install
+ - go build
  - go test -v ./...;
