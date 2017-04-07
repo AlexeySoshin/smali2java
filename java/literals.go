@@ -1,7 +1,7 @@
 package java
 
 const (
-	Class = "class"
+	Class   = "class"
 	Extends = "extends"
-	Static = "static"
+	Static  = "static"
 )
