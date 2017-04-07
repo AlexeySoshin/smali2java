@@ -109,6 +109,8 @@ func convertLine(javaFile *java.File, line string) {
 			returnObject(javaFile, splitLine)
 		case smali.Const4:
 			(&parser.BooleanParser{}).Parse(javaFile, splitLine)
+		case smali.SPutBoolean:
+			(&parser.SPutBooleanParser{}).Parse(javaFile, splitLine)
 		default:
 			// Something that was not parsed
 			// Add as a comment

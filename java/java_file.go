@@ -56,3 +56,9 @@ func GetClassName(jvmName string) string {
 	}
 
 }
+
+func GetMethodName(methodAndType string) string {
+	typeIndex := strings.Index(methodAndType, ":")
+
+	return methodAndType[:typeIndex]
+}

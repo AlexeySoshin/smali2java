@@ -17,3 +17,11 @@ func TestGetClassNameRegularClass(t *testing.T) {
 
 	assert.Equal(t, "android.content.Context", className)
 }
+
+func TestGetMethodName(t *testing.T) {
+	input := "robotEnabled:Z"
+
+	methodName := GetMethodName(input)
+
+	assert.Equal(t, "robotEnabled", methodName)
+}
