@@ -107,7 +107,11 @@ func convertLine(javaFile *java.File, line string) {
 			invokeStatic(javaFile, splitLine)
 		case smali.ReturnObject:
 			returnObject(javaFile, splitLine)
+		case smali.Const4:
+			(&parser.BooleanParser{}).Parse(javaFile, splitLine)
 		default:
+			// Something that was not parsed
+			// Add as a comment
 			line := append([]string{"//"}, splitLine...)
 			javaFile.AddLine(line)
 		}

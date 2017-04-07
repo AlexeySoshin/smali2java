@@ -14,8 +14,8 @@ func TestParseTrueValue(t *testing.T) {
 	javaFile := &java.File{}
 	(&BooleanParser{}).Parse(javaFile, strings.Fields(input))
 
-	output := strings.Join(javaFile.First(), "")
-	expectedOutput := "boolean v1 = true;"
+	output := strings.Join(javaFile.First(), " ")
+	expectedOutput := "boolean v1 = false ;"
 
 	assert.Equal(t, expectedOutput, output)
 }
@@ -26,8 +26,8 @@ func TestParseFalseValue(t *testing.T) {
 	javaFile := &java.File{}
 	(&BooleanParser{}).Parse(javaFile, strings.Fields(input))
 
-	output := strings.Join(javaFile.First(), "")
-	expectedOutput := "boolean v1 = false;"
+	output := strings.Join(javaFile.First(), " ")
+	expectedOutput := "boolean v2 = true ;"
 
 	assert.Equal(t, expectedOutput, output)
 }
