@@ -12,10 +12,10 @@ func TestParseTrueValue(t *testing.T) {
 	input := "const/4 v1, 0x0"
 
 	javaFile := &java.File{}
-	(&BooleanParser{}).Parse(javaFile, strings.Fields(input))
+	(&IntParser{}).Parse(javaFile, strings.Fields(input))
 
 	output := strings.Join(javaFile.First(), " ")
-	expectedOutput := "boolean v1 = false ;"
+	expectedOutput := "int v1 = 0 ;"
 
 	assert.Equal(t, expectedOutput, output)
 }
@@ -24,10 +24,10 @@ func TestParseFalseValue(t *testing.T) {
 	input := "const/4 v2, 0x1"
 
 	javaFile := &java.File{}
-	(&BooleanParser{}).Parse(javaFile, strings.Fields(input))
+	(&IntParser{}).Parse(javaFile, strings.Fields(input))
 
 	output := strings.Join(javaFile.First(), " ")
-	expectedOutput := "boolean v2 = true ;"
+	expectedOutput := "int v2 = 1 ;"
 
 	assert.Equal(t, expectedOutput, output)
 }

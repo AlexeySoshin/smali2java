@@ -16,7 +16,7 @@ func TestParseSPutBoolean(t *testing.T) {
 
 	assert.NoError(t, err)
 	output := strings.Join(javaFile.First(), " ")
-	expectedOutput := "com.checker.StatusChecker . robotEnabled = v1 ;"
+	expectedOutput := "com.checker.StatusChecker.robotEnabled = (v1!= 0) ;"
 
 	assert.Equal(t, expectedOutput, output)
 }

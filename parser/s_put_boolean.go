@@ -28,7 +28,9 @@ func (p *SPutBooleanParser) Parse(javaFile *java.File, currentLine java.Line) er
 	class := java.GetClassName(classAndMethod[:arrowIndex])
 	method := java.GetMethodName(classAndMethod[arrowIndex+len(smali.Arrow):])
 
-	line := []string{class, ".", method, "=", variableName, ";"}
+	intToBoolean := strings.Join([]string{"(", variableName, "!= 0)"}, "")
+
+	line := []string{strings.Join([]string{class, ".", method}, ""), "=", intToBoolean, ";"}
 	javaFile.AddLine(line)
 
 	return nil
