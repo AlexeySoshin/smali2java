@@ -23,6 +23,14 @@ func (f *File) First() Line {
 	return f.Lines[0]
 }
 
+func (f *File) Last() Line {
+	return f.Lines[len(f.Lines) - 1]
+}
+
+func (f *File) ReplaceLast(l Line) {
+	f.Lines[len(f.Lines) - 1] = l
+}
+
 func GetClassName(jvmName string) string {
 	splitJvmName := strings.Split(jvmName, "/")
 

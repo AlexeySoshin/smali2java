@@ -106,7 +106,10 @@ func convertLine(javaFile *java.File, line string) {
 		case smali.ConstString:
 			finalString(javaFile, splitLine)
 		case smali.InvokeStatic:
-			invokeStatic(javaFile, splitLine)
+			(&parser.InvokeParser{}).Parse(javaFile, splitLine)
+		case smali.MoveResultObject:
+		case smali.MoveResult:
+			(&parser.MoveResultParser{}).Parse(javaFile, splitLine)
 		case smali.ReturnObject:
 			returnObject(javaFile, splitLine)
 		case smali.Const4:
@@ -142,33 +145,6 @@ func parseVariableName(variableName string) string {
 	return variableName[:len(variableName)-1]
 }
 
-func invokeStatic(javaFile *java.File, splitLine java.Line) {
-	//"{p0}, Lcom/checker/HttpRequest;->post(Ljava/lang/CharSequence;)Lcom/checker/HttpRequest"
-	// com.checker.HttpRequest.post( p0 )
-
-	variablesList := splitLine[1 : len(splitLine)-1]
-
-	variables := strings.Join(variablesList, "")
-
-	variables = variables[1 : len(variables)-2]
-
-	classNameAndMethod := splitLine[len(splitLine)-1]
-
-	classNameAndMethodSplit := strings.Split(classNameAndMethod, "->")
-
-	if len(classNameAndMethodSplit) < 2 {
-		fmt.Println(splitLine)
-	}
-
-	methodAndArgumentsSplit := strings.Split(classNameAndMethodSplit[1], "(")
-
-	className := java.GetClassName(classNameAndMethodSplit[0])
-
-	method := methodAndArgumentsSplit[0]
-
-	line := []string{className, ".", method, "(", variables, ");"}
-	javaFile.AddLine(line)
-}
 
 func staticGet(javaFile *java.File, splitLine []string) {
 

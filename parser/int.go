@@ -5,6 +5,7 @@ import (
 	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/smali"
 	"strconv"
+	"strings"
 )
 
 type IntParser struct{}
@@ -27,7 +28,9 @@ func (p *IntParser) Parse(javaFile *java.File, currentLine java.Line) error {
 
 	value, _ := strconv.ParseInt(hexValue, 0, 64)
 
-	line := []string{"\t\t", java.Int, variableName, "=", fmt.Sprintf("%d", value), ";"}
+	comment := strings.Join(currentLine, " ")
+
+	line := []string{java.Int, variableName, "=", fmt.Sprintf("%d", value), "; //", comment}
 	javaFile.AddLine(line)
 
 	return nil

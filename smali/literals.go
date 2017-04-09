@@ -16,5 +16,7 @@ const (
 	SPutObject = "sput-object"
 	SGet = "sget"
 	SGetObject = "sget-object"
+	MoveResult = "move-result"
+	MoveResultObject = "move-result-object"
 	Arrow        = "->"
 )

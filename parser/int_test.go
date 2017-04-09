@@ -15,7 +15,7 @@ func TestParseTrueValue(t *testing.T) {
 	(&IntParser{}).Parse(javaFile, strings.Fields(input))
 
 	output := strings.Join(javaFile.First(), " ")
-	expectedOutput := "int v1 = 0 ;"
+	expectedOutput := "int v1 = 0 ;" + " // " + input
 
 	assert.Equal(t, expectedOutput, output)
 }
@@ -27,7 +27,7 @@ func TestParseFalseValue(t *testing.T) {
 	(&IntParser{}).Parse(javaFile, strings.Fields(input))
 
 	output := strings.Join(javaFile.First(), " ")
-	expectedOutput := "int v2 = 1 ;"
+	expectedOutput := "int v2 = 1 ;" + " // " + input
 
 	assert.Equal(t, expectedOutput, output)
 }
