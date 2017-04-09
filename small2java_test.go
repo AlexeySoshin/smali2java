@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/alexeysoshin/smali2java/java"
-	"github.com/stretchr/testify/assert"
 	"log"
 	"strings"
 	"sync"
@@ -26,20 +25,6 @@ func TestConstString(t *testing.T) {
 }
 
 
-
-func TestStaticGet(t *testing.T) {
-	javaFile := java.File{}
-
-	input := "sget v2, Lcom/checker/StatusChecker;->robotRadiusSelect:I"
-
-	expectedOutput := "v2 = com.checker.StatusChecker . robotRadiusSelect ();"
-
-	staticGet(&javaFile, strings.Fields(input))
-
-	output := strings.Join(javaFile.First(), " ")
-
-	assert.Equal(t, expectedOutput, output)
-}
 
 func TestReturnObject(t *testing.T) {
 

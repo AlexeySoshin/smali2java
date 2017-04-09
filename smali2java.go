@@ -88,12 +88,14 @@ func convertLine(javaFile *java.File, line string) {
 
 		switch opcode {
 		case smali.Class:
+			indent++
 			(&parser.ClassParser{}).Parse(javaFile, splitLine)
 		case smali.ReturnVoid:
 			line := []string{"return;"}
 			javaFile.AddLine(line)
 
 		case smali.End:
+			indent--
 			line := []string{"}"}
 			javaFile.AddLine(line)
 		case smali.Method:
@@ -107,9 +109,13 @@ func convertLine(javaFile *java.File, line string) {
 			finalString(javaFile, splitLine)
 		case smali.InvokeStatic:
 			(&parser.InvokeParser{}).Parse(javaFile, splitLine)
+		case smali.InvokeInterface:
+		case smali.InvokeVirtual:
+			(&parser.InvokeInterfaceParser{}).Parse(javaFile, splitLine)
 		case smali.MoveResultObject:
 		case smali.MoveResult:
 			(&parser.MoveResultParser{}).Parse(javaFile, splitLine)
+		case smali.Return:
 		case smali.ReturnObject:
 			returnObject(javaFile, splitLine)
 		case smali.Const4:
@@ -125,7 +131,7 @@ func convertLine(javaFile *java.File, line string) {
 		default:
 			// Something that was not parsed
 			// Add as a comment
-			line := append([]string{"//"}, splitLine...)
+			line := append(append([]string{"/*"}, splitLine...), "*/")
 			javaFile.AddLine(line)
 		}
 	}
@@ -146,22 +152,6 @@ func parseVariableName(variableName string) string {
 }
 
 
-func staticGet(javaFile *java.File, splitLine []string) {
-
-	// Strip comma
-	variableName := parseVariableName(splitLine[1])
-
-	classNameAndMethod := strings.Split(splitLine[2], "->")
-
-	className := java.GetClassName(classNameAndMethod[0])
-
-	methodNameAndReturnValue := strings.Split(classNameAndMethod[1], ":")
-
-	methodName := methodNameAndReturnValue[0]
-
-	line := []string{variableName, "=", className, ".", methodName, "();"}
-	javaFile.AddLine(line)
-}
 
 func finalString(javaFile *java.File, splitLine []string) {
 

@@ -3,12 +3,14 @@ package smali
 const (
 	Class        = ".class"
 	ReturnVoid   = "return-void"
+	Return   = "return"
 	End          = ".end"
 	Method       = ".method"
 	Field        = ".field"
 	Super        = ".super"
 	ConstString  = "const-string"
 	InvokeStatic = "invoke-static"
+	InvokeVirtual = "invoke-virtual"
 	ReturnObject = "return-object"
 	Const4       = "const/4"
 	SPutBoolean  = "sput-boolean"
@@ -18,5 +20,6 @@ const (
 	SGetObject = "sget-object"
 	MoveResult = "move-result"
 	MoveResultObject = "move-result-object"
+	InvokeInterface = "invoke-interface"
 	Arrow        = "->"
 )
