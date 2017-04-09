@@ -84,23 +84,22 @@ func convertLine(javaFile *java.File, line string) {
 	} else {
 
 		opcode := splitLine[0]
-		indent := 1
+
 
 		switch opcode {
 		case smali.Class:
-			indent++
 			(&parser.ClassParser{}).Parse(javaFile, splitLine)
+			javaFile.Indent++
 		case smali.ReturnVoid:
 			line := []string{"return;"}
 			javaFile.AddLine(line)
-
 		case smali.End:
-			indent--
+			javaFile.Indent--
 			line := []string{"}"}
 			javaFile.AddLine(line)
 		case smali.Method:
-			indent++
 			(&parser.MethodParser{}).Parse(javaFile, splitLine)
+			javaFile.Indent++
 		case smali.Field:
 			(&parser.FieldParser{}).Parse(javaFile, splitLine)
 		case smali.Super:
@@ -129,10 +128,16 @@ func convertLine(javaFile *java.File, line string) {
 		case smali.SPutBoolean:
 			(&parser.SPutBooleanParser{}).Parse(javaFile, splitLine)
 		default:
-			// Something that was not parsed
-			// Add as a comment
-			line := append(append([]string{"/*"}, splitLine...), "*/")
-			javaFile.AddLine(line)
+			if strings.Index(opcode, ":try_start") >= 0 {
+
+				javaFile.AddLine([]string{"try { //", strings.Join(splitLine, "")})
+				javaFile.Indent++
+			} else {
+				// Something that was not parsed
+				// Add as a comment
+				line := append(append([]string{"/*"}, splitLine...), "*/")
+				javaFile.AddLine(line)
+			}
 		}
 	}
 

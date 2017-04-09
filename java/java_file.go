@@ -13,10 +13,12 @@ type File struct {
 	Extends    string
 	Implements []string
 	ClassName  string
+	Indent     int
 }
 
 func (f *File) AddLine(line Line) {
-	f.Lines = append(f.Lines, line)
+
+	f.Lines = append(f.Lines, f.indentate(line))
 }
 
 func (f *File) First() Line {
@@ -27,8 +29,18 @@ func (f *File) Last() Line {
 	return f.Lines[len(f.Lines) - 1]
 }
 
+func (f *File) indentate(line Line) Line {
+	if f.Indent < 1 {
+		f.Indent = 1
+	}
+
+	line = append([]string{strings.Repeat("\t", f.Indent)}, line...)
+
+	return line
+}
+
 func (f *File) ReplaceLast(l Line) {
-	f.Lines[len(f.Lines) - 1] = l
+	f.Lines[len(f.Lines) - 1] = f.indentate(l)
 }
 
 func GetClassName(jvmName string) string {
