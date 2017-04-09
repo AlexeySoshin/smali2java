@@ -13,5 +13,8 @@ const (
 	Const4       = "const/4"
 	SPutBoolean  = "sput-boolean"
 	SPut         = "sput"
+	SPutObject = "sput-object"
+	SGet = "sget"
+	SGetObject = "sget-object"
 	Arrow        = "->"
 )

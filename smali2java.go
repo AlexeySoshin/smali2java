@@ -84,6 +84,7 @@ func convertLine(javaFile *java.File, line string) {
 	} else {
 
 		opcode := splitLine[0]
+		indent := 1
 
 		switch opcode {
 		case smali.Class:
@@ -96,9 +97,10 @@ func convertLine(javaFile *java.File, line string) {
 			line := []string{"}"}
 			javaFile.AddLine(line)
 		case smali.Method:
+			indent++
 			(&parser.MethodParser{}).Parse(javaFile, splitLine)
 		case smali.Field:
-			(&FieldParser{}).Parse(javaFile, splitLine)
+			(&parser.FieldParser{}).Parse(javaFile, splitLine)
 		case smali.Super:
 			parseSuper(javaFile, splitLine)
 		case smali.ConstString:
@@ -109,7 +111,11 @@ func convertLine(javaFile *java.File, line string) {
 			returnObject(javaFile, splitLine)
 		case smali.Const4:
 			(&parser.IntParser{}).Parse(javaFile, splitLine)
+		case smali.SGet:
+		case smali.SGetObject:
+			(&parser.SGetParser{}).Parse(javaFile, splitLine)
 		case smali.SPut:
+		case smali.SPutObject:
 			(&parser.SPutParser{}).Parse(javaFile, splitLine)
 		case smali.SPutBoolean:
 			(&parser.SPutBooleanParser{}).Parse(javaFile, splitLine)
