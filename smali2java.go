@@ -98,7 +98,7 @@ func convertLine(javaFile *java.File, line string) {
 		case smali.Method:
 			(&parser.MethodParser{}).Parse(javaFile, splitLine)
 		case smali.Field:
-			parseField(javaFile, splitLine)
+			(&FieldParser{}).Parse(javaFile, splitLine)
 		case smali.Super:
 			parseSuper(javaFile, splitLine)
 		case smali.ConstString:
@@ -109,6 +109,8 @@ func convertLine(javaFile *java.File, line string) {
 			returnObject(javaFile, splitLine)
 		case smali.Const4:
 			(&parser.IntParser{}).Parse(javaFile, splitLine)
+		case smali.SPut:
+			(&parser.SPutParser{}).Parse(javaFile, splitLine)
 		case smali.SPutBoolean:
 			(&parser.SPutBooleanParser{}).Parse(javaFile, splitLine)
 		default:
@@ -185,23 +187,6 @@ func finalString(javaFile *java.File, splitLine []string) {
 	variableName = variableName[:len(variableName)-1]
 	variableValue := splitLine[2]
 	line := []string{"final String", variableName, "=", variableValue, ";"}
-	javaFile.AddLine(line)
-}
-
-func parseField(javaFile *java.File, splitLine []string) {
-	static := ""
-	memberAndClass := make([]string, 0)
-	if splitLine[2] == java.Static {
-		static = java.Static
-		memberAndClass = strings.Split(splitLine[3], ":")
-	} else {
-		memberAndClass = strings.Split(splitLine[2], ":")
-	}
-
-	accessor := splitLine[1]
-	className := java.GetClassName(memberAndClass[1])
-	memberName := memberAndClass[0]
-	line := []string{accessor, static, className, memberName, ";"}
 	javaFile.AddLine(line)
 }
 

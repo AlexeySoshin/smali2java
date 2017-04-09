@@ -1,6 +1,8 @@
 # Smali2Java
 
-This project attempts to create a valid Java source code from disassembled code used by Dalvik 
+This project attempts to create a valid Java source code from disassembled code used by Dalvik <br />
+
+Read the specification here: https://source.android.com/devices/tech/dalvik/dalvik-bytecode.html
 
 ## Prerequisites
 * Go 1.7

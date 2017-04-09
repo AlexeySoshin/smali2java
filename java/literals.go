@@ -4,4 +4,5 @@ const (
 	Class   = "class"
 	Extends = "extends"
 	Static  = "static"
+	Int     = "int"
 )

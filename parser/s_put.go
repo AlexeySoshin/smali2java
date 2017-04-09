@@ -6,16 +6,20 @@ import (
 	"strings"
 )
 
-type SPutBooleanParser struct{}
+type SPutParser struct {
+	header string
+}
 
-const sPutBoolean = smali.SPutBoolean
+func (p *SPutParser) Parse(javaFile *java.File, currentLine java.Line) error {
 
-func (p *SPutBooleanParser) Parse(javaFile *java.File, currentLine java.Line) error {
-
-	if currentLine[0] != sPutBoolean {
-		return &WrongHeaderError{expected: sPutBoolean, actual: currentLine[0]}
+	if p.header == "" {
+		p.header = smali.SPut
 	}
-	// sput-boolean v1, Lcom/checker/StatusChecker;->robotEnabled:Z
+
+	if currentLine[0] != p.header {
+		return &WrongHeaderError{expected: p.header, actual: currentLine[0]}
+	}
+	// sput v1, Lcom/checker/StatusChecker;->robotRadiusSelect:I
 
 	variableName := currentLine[1]
 
@@ -28,9 +32,7 @@ func (p *SPutBooleanParser) Parse(javaFile *java.File, currentLine java.Line) er
 	class := java.GetClassName(classAndMethod[:arrowIndex])
 	method := java.GetMethodName(classAndMethod[arrowIndex+len(smali.Arrow):])
 
-	intToBoolean := strings.Join([]string{"(", variableName, "!= 0)"}, "")
-
-	line := []string{strings.Join([]string{class, ".", method}, ""), "=", intToBoolean, ";"}
+	line := []string{strings.Join([]string{class, ".", method}, ""), "=", variableName, ";"}
 	javaFile.AddLine(line)
 
 	return nil

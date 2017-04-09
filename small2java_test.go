@@ -9,19 +9,6 @@ import (
 	"testing"
 )
 
-func TestFieldPublic(t *testing.T) {
-	input := ".field public static id:I"
-
-	javaFile := java.File{}
-	parseField(&javaFile, strings.Fields(input))
-
-	expectedOutput := "public static Integer id ;"
-
-	output := strings.Join(javaFile.First(), " ")
-
-	assert.Equal(t, expectedOutput, output)
-}
-
 func TestConstString(t *testing.T) {
 	input := `const-string v0, ""`
 

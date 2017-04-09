@@ -7,15 +7,15 @@ import (
 	"testing"
 )
 
-func TestParseSPutBoolean(t *testing.T) {
-	input := "sput-boolean v1, Lcom/checker/StatusChecker;->robotEnabled:Z"
+func TestParseSPut(t *testing.T) {
 
+	input := "sput v1, Lcom/checker/StatusChecker;->robotRadiusSelect:I"
 	javaFile := &java.File{}
-	err := (&SPutBooleanParser{}).Parse(javaFile, strings.Fields(input))
+	err := (&SPutParser{}).Parse(javaFile, strings.Fields(input))
 
 	assert.NoError(t, err)
 	output := strings.Join(javaFile.First(), " ")
-	expectedOutput := "com.checker.StatusChecker.robotEnabled = (v1!= 0) ;"
+	expectedOutput := "com.checker.StatusChecker.robotRadiusSelect = v1 ;"
 
 	assert.Equal(t, expectedOutput, output)
 }

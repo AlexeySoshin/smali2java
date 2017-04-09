@@ -10,7 +10,8 @@ const (
 	ConstString  = "const-string"
 	InvokeStatic = "invoke-static"
 	ReturnObject = "return-object"
-	Const4	= "const/4"
+	Const4       = "const/4"
 	SPutBoolean  = "sput-boolean"
-	Arrow = "->"
+	SPut         = "sput"
+	Arrow        = "->"
 )
