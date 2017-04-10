@@ -7,7 +7,7 @@ import (
 
 type FieldParser struct{}
 
-func (p *FieldParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	static := ""
 	memberAndClass := make([]string, 0)
 	if currentLine[2] == java.Static {
@@ -18,7 +18,7 @@ func (p *FieldParser) Parse(javaFile *java.File, currentLine java.Line) error {
 	}
 
 	accessor := currentLine[1]
-	className := java.GetClassName(memberAndClass[1])
+	className := GetClassName(memberAndClass[1])
 	memberName := memberAndClass[0]
 	line := []string{accessor, static, className, memberName, ";"}
 	javaFile.AddLine(line)

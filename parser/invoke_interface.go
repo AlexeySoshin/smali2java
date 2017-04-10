@@ -3,7 +3,6 @@ package parser
 import (
 	"strings"
 	"fmt"
-	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/smali"
 )
 
@@ -18,7 +17,7 @@ type MethodSignature struct {
 	ReturnValue string
 }
 
-func (p *InvokeInterfaceParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *InvokeInterfaceParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	//invoke-interface {v2, v3, v5}, Landroid/content/SharedPreferences;->getBoolean(Ljava/lang/String;Z)Z
 
 	if len(p.headers) == 0 {
@@ -53,10 +52,10 @@ func (p *InvokeInterfaceParser) parseClassAndMethod(classAndMethodString string)
 	argumentsStart := strings.Index(classAndMethodString, "(")
 	argumentsEnd := strings.Index(classAndMethodString, ")")
 
-	signature.ClassName = java.GetClassName(classAndMethodString[:arrowIndex])
+	signature.ClassName = GetClassName(classAndMethodString[:arrowIndex])
 	signature.MethodName = classAndMethodString[arrowIndex+len(smali.Arrow):argumentsStart]
 	signature.Arguments = classAndMethodString[argumentsStart+1:argumentsEnd]
-	signature.ReturnValue = java.GetClassName(classAndMethodString[argumentsEnd+1:])
+	signature.ReturnValue = GetClassName(classAndMethodString[argumentsEnd+1:])
 
 	return signature
 }

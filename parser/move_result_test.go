@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
 
 	"strings"
 
@@ -13,7 +12,7 @@ import (
 func TestMoveResult(t *testing.T) {
 
 	input := "move-result v0"
-	javaFile := &java.File{}
+	javaFile := &JavaFile{}
 	err := (&InvokeParser{}).Parse(javaFile, strings.Fields("invoke-static {v0}, Lcom/checker/StatusChecker;->GetVersionCode(Ljava/lang/String;)I"))
 
 	assert.NoError(t, err)
@@ -30,7 +29,7 @@ func TestMoveResult(t *testing.T) {
 
 func TestMoveResultObject(t *testing.T) {
 	input := "move-result-object v3"
-	javaFile := &java.File{}
+	javaFile := &JavaFile{}
 	err := (&InvokeParser{}).Parse(javaFile, strings.Fields("invoke-static {v3}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;"))
 
 	assert.NoError(t, err)

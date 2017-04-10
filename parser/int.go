@@ -12,7 +12,7 @@ type IntParser struct{}
 
 const intHeader = smali.Const4
 
-func (p *IntParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *IntParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if currentLine[0] != intHeader {
 		return &WrongHeaderError{expected: intHeader, actual: currentLine[0]}

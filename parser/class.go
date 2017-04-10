@@ -4,9 +4,9 @@ import "github.com/alexeysoshin/smali2java/java"
 
 type ClassParser struct{}
 
-func (p *ClassParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *ClassParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	accessor := currentLine[1]
-	name := java.GetClassName(currentLine[2])
+	name := GetClassName(currentLine[2])
 	line := []string{accessor, java.Class, name, "{"}
 	javaFile.AddLine(line)
 	javaFile.ClassName = name

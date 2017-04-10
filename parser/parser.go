@@ -1,6 +1,5 @@
 package parser
 
-import "github.com/alexeysoshin/smali2java/java"
 
 type WrongHeaderError struct {
 	expected string
@@ -12,5 +11,5 @@ func (WrongHeaderError) Error() string {
 }
 
 type Parser interface {
-	Parse(javaFile *java.File, lines []string) error
+	Parse(javaFile *JavaFile, lines []string) error
 }

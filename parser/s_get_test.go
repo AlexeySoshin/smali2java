@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -10,7 +9,7 @@ import (
 func TestParseSGet(t *testing.T) {
 
 	input := "sget v0, Lcom/checker/StatusChecker;->id:I"
-	javaFile := &java.File{}
+	javaFile := &JavaFile{}
 	err := (&SGetParser{}).Parse(javaFile, strings.Fields(input))
 
 	assert.NoError(t, err)
@@ -24,7 +23,7 @@ func TestParseSGet(t *testing.T) {
 func TestParseSGetObject(t *testing.T) {
 
 	input := "sget-object v0, Lcom/checker/StatusChecker;->result:Lcom/checker/CheckResult;"
-	javaFile := &java.File{}
+	javaFile := &JavaFile{}
 	err := (&SGetParser{}).Parse(javaFile, strings.Fields(input))
 
 	assert.NoError(t, err)

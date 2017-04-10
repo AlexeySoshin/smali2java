@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -10,7 +9,7 @@ import (
 func TestParseSPut(t *testing.T) {
 
 	input := "sput v1, Lcom/checker/StatusChecker;->robotRadiusSelect:I"
-	javaFile := &java.File{}
+	javaFile := &JavaFile{}
 	err := (&SPutParser{}).Parse(javaFile, strings.Fields(input))
 
 	assert.NoError(t, err)

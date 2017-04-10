@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/smali"
 	"strings"
 )
@@ -10,7 +9,7 @@ type SPutParser struct {
 	header string
 }
 
-func (p *SPutParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *SPutParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if p.header == "" {
 		p.header = smali.SPut
@@ -29,8 +28,8 @@ func (p *SPutParser) Parse(javaFile *java.File, currentLine java.Line) error {
 	classAndMethod := currentLine[2]
 
 	arrowIndex := strings.Index(classAndMethod, smali.Arrow)
-	class := java.GetClassName(classAndMethod[:arrowIndex])
-	method := java.GetMethodName(classAndMethod[arrowIndex+len(smali.Arrow):])
+	class := GetClassName(classAndMethod[:arrowIndex])
+	method := GetMethodName(classAndMethod[arrowIndex+len(smali.Arrow):])
 
 	line := []string{strings.Join([]string{class, ".", method}, ""), "=", variableName, ";"}
 	javaFile.AddLine(line)

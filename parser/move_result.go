@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/smali"
 
 	"fmt"
@@ -11,7 +10,7 @@ type MoveResultParser struct {
 	headers map[string]bool
 }
 
-func (p *MoveResultParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *MoveResultParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if len(p.headers) == 0 {
 		p.headers = map[string]bool{smali.MoveResult : true, smali.MoveResultObject: true}

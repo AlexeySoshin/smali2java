@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
+
 	"github.com/alexeysoshin/smali2java/smali"
 	"strings"
 )
@@ -10,7 +10,7 @@ type SPutBooleanParser struct{}
 
 const sPutBoolean = smali.SPutBoolean
 
-func (p *SPutBooleanParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *SPutBooleanParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if currentLine[0] != sPutBoolean {
 		return &WrongHeaderError{expected: sPutBoolean, actual: currentLine[0]}
@@ -25,8 +25,8 @@ func (p *SPutBooleanParser) Parse(javaFile *java.File, currentLine java.Line) er
 	classAndMethod := currentLine[2]
 
 	arrowIndex := strings.Index(classAndMethod, smali.Arrow)
-	class := java.GetClassName(classAndMethod[:arrowIndex])
-	method := java.GetMethodName(classAndMethod[arrowIndex+len(smali.Arrow):])
+	class := GetClassName(classAndMethod[:arrowIndex])
+	method := GetMethodName(classAndMethod[arrowIndex+len(smali.Arrow):])
 
 	intToBoolean := strings.Join([]string{"(", variableName, "!= 0)"}, "")
 

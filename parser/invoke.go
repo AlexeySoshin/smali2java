@@ -3,7 +3,6 @@ package parser
 import (
 	"strings"
 	"fmt"
-	"github.com/alexeysoshin/smali2java/java"
 )
 
 type InvokeParser struct {
@@ -11,7 +10,7 @@ type InvokeParser struct {
 }
 
 
-func (p *InvokeParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *InvokeParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	//"{p0}, Lcom/checker/HttpRequest;->post(Ljava/lang/CharSequence;)Lcom/checker/HttpRequest"
 	// com.checker.HttpRequest.post( p0 )
 
@@ -31,7 +30,7 @@ func (p *InvokeParser) Parse(javaFile *java.File, currentLine java.Line) error {
 
 	methodAndArgumentsSplit := strings.Split(classNameAndMethodSplit[1], "(")
 
-	className := java.GetClassName(classNameAndMethodSplit[0])
+	className := GetClassName(classNameAndMethodSplit[0])
 
 	method := methodAndArgumentsSplit[0]
 

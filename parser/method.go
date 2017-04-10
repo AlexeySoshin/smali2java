@@ -8,7 +8,7 @@ import (
 
 type MethodParser struct{}
 
-func (p *MethodParser) Parse(javaFile *java.File, currentLine java.Line) error {
+func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	accessor := currentLine[1]
 	static := ""
 	smaliMethod := ""
@@ -31,13 +31,13 @@ func (p *MethodParser) Parse(javaFile *java.File, currentLine java.Line) error {
 		returnValueIndex := strings.Index(smaliMethod, ")")
 		method = smaliMethod[0:argumentsIndex]
 		argumentsString := smaliMethod[argumentsIndex+1 : returnValueIndex]
-		returnValue = java.GetClassName(smaliMethod[returnValueIndex+1:])
+		returnValue = GetClassName(smaliMethod[returnValueIndex+1:])
 
 		if len(argumentsString) > 0 {
 			smaliArguments := strings.Split(argumentsString, ",")
 
 			for i, arg := range smaliArguments {
-				arguments = append(arguments, fmt.Sprintf("%s p%d", java.GetClassName(arg), i))
+				arguments = append(arguments, fmt.Sprintf("%s p%d", GetClassName(arg), i))
 			}
 		}
 

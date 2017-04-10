@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/alexeysoshin/smali2java/java"
-	"github.com/alexeysoshin/smali2java/java/types"
 	"github.com/alexeysoshin/smali2java/parser"
 	"github.com/alexeysoshin/smali2java/smali"
 	"log"
@@ -52,7 +51,7 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 		}
 		defer file.Close()
 
-		javaFile := java.File{}
+		javaFile := parser.File{}
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
 			//fmt.Println(scanner.Text())
@@ -70,19 +69,18 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 
 }
 
-func printJavaFile(javaFile java.File) {
+func printJavaFile(javaFile parser.File) {
 	for _, line := range javaFile.Lines {
 		fmt.Println(strings.Join(line, " "))
 	}
 }
 
-func convertLine(javaFile *java.File, line string) {
+func convertLine(javaFile *parser.File, line string) {
 	splitLine := strings.Fields(line)
 
 	if len(splitLine) == 0 {
 
 	} else {
-
 		opcode := splitLine[0]
 
 
@@ -103,9 +101,9 @@ func convertLine(javaFile *java.File, line string) {
 		case smali.Field:
 			(&parser.FieldParser{}).Parse(javaFile, splitLine)
 		case smali.Super:
-			parseSuper(javaFile, splitLine)
+			(&parser.SuperParser{}).Parse(javaFile, splitLine)
 		case smali.ConstString:
-			finalString(javaFile, splitLine)
+			(&parser.FinalString{}).Parse(javaFile, splitLine)
 		case smali.InvokeStatic:
 			(&parser.InvokeParser{}).Parse(javaFile, splitLine)
 		case smali.InvokeInterface:
@@ -143,7 +141,7 @@ func convertLine(javaFile *java.File, line string) {
 
 }
 
-func returnObject(javaFile *java.File, splitLine []string) {
+func returnObject(javaFile *JavaFile, splitLine []string) {
 
 	// Strip comma
 	variableName := parseVariableName(splitLine[1])
@@ -158,23 +156,3 @@ func parseVariableName(variableName string) string {
 
 
 
-func finalString(javaFile *java.File, splitLine []string) {
-
-	variableName := splitLine[1]
-	variableName = variableName[:len(variableName)-1]
-	variableValue := splitLine[2]
-	line := []string{"final String", variableName, "=", variableValue, ";"}
-	javaFile.AddLine(line)
-}
-
-func parseSuper(javaFile *java.File, splitLine []string) {
-	super := java.GetClassName(splitLine[1])
-
-	if super != types.Object {
-
-		classDeclarationLine := javaFile.Lines[len(javaFile.Lines)-1]
-		accessor := classDeclarationLine[0]
-		name := classDeclarationLine[2]
-		javaFile.Lines[len(javaFile.Lines)-1] = []string{accessor, java.Class, name, java.Extends, super}
-	}
-}
