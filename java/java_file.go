@@ -31,7 +31,7 @@ func (f *File) Last() Line {
 
 func (f *File) indentate(line Line) Line {
 	if f.Indent < 1 {
-		f.Indent = 1
+		return line
 	}
 
 	line = append([]string{strings.Repeat("\t", f.Indent)}, line...)
