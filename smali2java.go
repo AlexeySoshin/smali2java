@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/parser"
 	"github.com/alexeysoshin/smali2java/smali"
 	"log"
@@ -51,7 +50,7 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 		}
 		defer file.Close()
 
-		javaFile := parser.File{}
+		javaFile := parser.JavaFile{}
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
 			//fmt.Println(scanner.Text())
@@ -69,13 +68,13 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 
 }
 
-func printJavaFile(javaFile parser.File) {
+func printJavaFile(javaFile parser.JavaFile) {
 	for _, line := range javaFile.Lines {
 		fmt.Println(strings.Join(line, " "))
 	}
 }
 
-func convertLine(javaFile *parser.File, line string) {
+func convertLine(javaFile *parser.JavaFile, line string) {
 	splitLine := strings.Fields(line)
 
 	if len(splitLine) == 0 {
@@ -103,7 +102,7 @@ func convertLine(javaFile *parser.File, line string) {
 		case smali.Super:
 			(&parser.SuperParser{}).Parse(javaFile, splitLine)
 		case smali.ConstString:
-			(&parser.FinalString{}).Parse(javaFile, splitLine)
+			(&parser.FinalStringParser{}).Parse(javaFile, splitLine)
 		case smali.InvokeStatic:
 			(&parser.InvokeParser{}).Parse(javaFile, splitLine)
 		case smali.InvokeInterface:
@@ -141,7 +140,7 @@ func convertLine(javaFile *parser.File, line string) {
 
 }
 
-func returnObject(javaFile *JavaFile, splitLine []string) {
+func returnObject(javaFile *parser.JavaFile, splitLine []string) {
 
 	// Strip comma
 	variableName := parseVariableName(splitLine[1])

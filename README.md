@@ -17,7 +17,7 @@ You'll need APK that you want to decompile <br />
 
 ```
 brew install apktool
-apktool ./<your_apk>
+apktool d ./<your_apk>
 ```
 
 You'll get a directory, which contains among the others directory called 'smali'
