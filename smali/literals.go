@@ -22,5 +22,6 @@ const (
 	MoveResultObject = "move-result-object"
 	InvokeInterface = "invoke-interface"
 	Arrow        = "->"
+	IfEqz	= "if-eqz"
 	TryStart = ":try_start_0"
 )

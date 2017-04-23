@@ -4,6 +4,7 @@ import (
 	"github.com/alexeysoshin/smali2java/java/types"
 	"strings"
 	"github.com/alexeysoshin/smali2java/smali"
+	"fmt"
 )
 
 type Line []string
@@ -42,6 +43,12 @@ func (f *JavaFile) indentate(line Line) Line {
 
 func (f *JavaFile) ReplaceLast(l Line) {
 	f.Lines[len(f.Lines) - 1] = f.indentate(l)
+}
+
+func (f *JavaFile) Print() {
+	for _, line := range f.Lines {
+		fmt.Println(strings.Join(line, " "))
+	}
 }
 
 func (f *JavaFile) ParseLine(line string) error {
@@ -96,11 +103,18 @@ func (f *JavaFile) ParseLine(line string) error {
 			(&SPutParser{}).Parse(f, splitLine)
 		case smali.SPutBoolean:
 			(&SPutBooleanParser{}).Parse(f, splitLine)
+		case smali.IfEqz:
+			(&IfEqzParser{}).Parse(f, splitLine)
+			f.Indent++
 		default:
 			if strings.Index(opcode, ":try_start") >= 0 {
 
 				f.AddLine([]string{"try { //", strings.Join(splitLine, "")})
 				f.Indent++
+			} else if strings.Index(opcode, ":cond") >= 0 {
+				f.Indent--
+				f.AddLine([]string {"}", "//", strings.Join(splitLine, "")})
+
 			} else {
 				// Something that was not parsed
 				// Add as a comment

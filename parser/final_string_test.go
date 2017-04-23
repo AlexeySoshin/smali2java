@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"strings"
-	"log"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFinalString(t *testing.T) {
@@ -13,12 +13,10 @@ func TestFinalString(t *testing.T) {
 	javaFile := &JavaFile{}
 	(&FinalStringParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := `final String v0 = "" ;`
+	expectedOutput := `final String v0 = "" ; // const-string v0, ""`
 
 	output := strings.Join(javaFile.First(), " ")
 
-	if expectedOutput != output {
-		log.Printf("Expected %s to return %s, got %s\n", input, expectedOutput, output)
-		t.Fail()
-	}
+
+	assert.Equal(t, expectedOutput, output)
 }
