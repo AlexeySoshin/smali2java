@@ -33,3 +33,17 @@ func TestMethodStaticWithParameters(t *testing.T) {
 
 	assert.Equal(t, expectedOutput, output)
 }
+
+func TestAbstractMethod(t *testing.T) {
+	javaFile := &JavaFile{}
+	input := ".method public abstract a(Ljava/lang/Class;)Landroid/arch/lifecycle/n;"
+
+	expectedOutput := "public abstract android.arch.lifecycle.n a ( java.lang.Class p0 ) {"
+
+	parser := MethodParser{}
+	parser.Parse(javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.First(), " ")
+
+	assert.Equal(t, expectedOutput, output)
+}

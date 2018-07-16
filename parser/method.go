@@ -10,19 +10,24 @@ type MethodParser struct{}
 
 func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	accessor := currentLine[1]
-	static := ""
+	// Since they can't be both, we can use one variable
+	staticOrAbstract := ""
 	smaliMethod := ""
 	method := ""
+	methodNameIndex := 2
 
-	if currentLine[2] == java.Static {
-		static = java.Static
-		smaliMethod = currentLine[3]
-	} else {
-		smaliMethod = currentLine[2]
+	if currentLine[methodNameIndex] == java.Static {
+		staticOrAbstract = java.Static
+		methodNameIndex++
+	} else if currentLine[methodNameIndex] == java.Abstract {
+		staticOrAbstract = java.Abstract
+		methodNameIndex++
 	}
 
+	smaliMethod = currentLine[methodNameIndex]
+
 	returnValue := ""
-	arguments := []string{}
+	var arguments []string
 
 	if smaliMethod == "constructor" {
 		method = javaFile.ClassName
@@ -43,7 +48,7 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	}
 
-	line := []string{accessor, static, returnValue, method, "(", strings.Join(arguments, ","), ")", "{"}
+	line := []string{accessor, staticOrAbstract, returnValue, method, "(", strings.Join(arguments, ","), ")", "{"}
 	javaFile.AddLine(line)
 
 	return nil
