@@ -2,11 +2,10 @@ language: go
 
 go_import_path: github.com/alexeysoshin/smali2java
 go:
- - 1.7
+ - 1.9
 before_install:
- - go get github.com/Masterminds/glide
  - go get github.com/stretchr/testify/assert
 install:
- - glide install
+ - go install
 script:
  - go test -v ./...
