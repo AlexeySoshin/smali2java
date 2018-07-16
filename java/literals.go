@@ -1,8 +1,9 @@
 package java
 
 const (
-	Class   = "class"
-	Extends = "extends"
-	Static  = "static"
-	Int     = "int"
+	Class    = "class"
+	Extends  = "extends"
+	Static   = "static"
+	Abstract = "abstract"
+	Int      = "int"
 )
