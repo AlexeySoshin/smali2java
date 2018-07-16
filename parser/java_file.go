@@ -9,6 +9,10 @@ import (
 
 type Line []string
 
+func (l Line) String() string {
+	return strings.Replace(strings.Join(l, " "), "  ", " ", -1)
+}
+
 type JavaFile struct {
 	Lines      []Line
 	Imports    []string
@@ -47,7 +51,7 @@ func (f *JavaFile) ReplaceLast(l Line) {
 
 func (f *JavaFile) Print() {
 	for _, line := range f.Lines {
-		fmt.Println(strings.Join(line, " "))
+		fmt.Println(line)
 	}
 }
 

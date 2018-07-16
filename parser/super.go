@@ -14,7 +14,7 @@ func (p *SuperParser) Parse(javaFile *JavaFile, splitLine []string) error {
 
 		classDeclarationLine := javaFile.Last()
 		accessor := classDeclarationLine[0]
-		name := classDeclarationLine[2]
+		name := classDeclarationLine[3]
 		line := []string{accessor, java.Class, name, java.Extends, super, "{"}
 		javaFile.AddLine(line)
 	}
