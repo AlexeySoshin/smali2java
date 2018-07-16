@@ -23,5 +23,6 @@ const (
 	InvokeInterface = "invoke-interface"
 	Arrow        = "->"
 	IfEqz	= "if-eqz"
-	TryStart = ":try_start_0"
+	Goto	= "goto"
+	TryStart = ":try_start"
 )

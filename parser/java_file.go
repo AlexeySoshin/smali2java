@@ -67,9 +67,10 @@ func (f *JavaFile) ParseLine(line string) error {
 		case smali.ReturnVoid:
 			line := []string{"return;"}
 			f.AddLine(line)
+		case smali.Goto:
 		case smali.End:
 			f.Indent--
-			line := []string{"}"}
+			line := []string{"}", "//", strings.Join(splitLine, " ")}
 			f.AddLine(line)
 		case smali.Method:
 			(&MethodParser{}).Parse(f, splitLine)
@@ -107,11 +108,16 @@ func (f *JavaFile) ParseLine(line string) error {
 			(&IfEqzParser{}).Parse(f, splitLine)
 			f.Indent++
 		default:
+			// Labels
 			if strings.Index(opcode, ":try_start") >= 0 {
 
-				f.AddLine([]string{"try { //", strings.Join(splitLine, "")})
+				f.AddLine([]string{"try { ", "//", strings.Join(splitLine, "")})
 				f.Indent++
 			} else if strings.Index(opcode, ":cond") >= 0 {
+				f.Indent--
+				f.AddLine([]string {"}", "//", strings.Join(splitLine, "")})
+
+			} else if strings.Index(opcode, ":goto") >= 0 {
 				f.Indent--
 				f.AddLine([]string {"}", "//", strings.Join(splitLine, "")})
 
