@@ -1,7 +1,6 @@
 package parser
 
 import (
-
 	"github.com/alexeysoshin/smali2java/smali"
 
 	"fmt"
@@ -14,7 +13,7 @@ type ReturnParser struct {
 func (p *ReturnParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if len(p.headers) == 0 {
-		p.headers = map[string]bool{smali.Return : true, smali.ReturnObject : true}
+		p.headers = map[string]bool{smali.Return: true, smali.ReturnObject: true}
 	}
 
 	_, correctHeader := p.headers[currentLine[0]]

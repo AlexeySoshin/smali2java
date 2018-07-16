@@ -3,8 +3,8 @@ package parser
 import (
 	"testing"
 
-	"strings"
 	"github.com/stretchr/testify/assert"
+	"strings"
 )
 
 func TestFinalString(t *testing.T) {
@@ -16,7 +16,6 @@ func TestFinalString(t *testing.T) {
 	expectedOutput := `final String v0 = "" ; // const-string v0, ""`
 
 	output := strings.Join(javaFile.First(), " ")
-
 
 	assert.Equal(t, expectedOutput, output)
 }

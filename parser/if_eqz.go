@@ -17,10 +17,9 @@ func (p *IfEqzParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	variable := currentLine[1]
 
 	// Remove trailing comma
-	variable = variable[:len(variable) - 1]
+	variable = variable[:len(variable)-1]
 	line := []string{"if (", variable, " != null) {", "//", strings.Join(currentLine, " ")}
 	javaFile.AddLine(line)
 
 	return nil
 }
-

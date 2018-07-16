@@ -1,7 +1,6 @@
 package parser
 
 import (
-
 	"github.com/alexeysoshin/smali2java/smali"
 	"strings"
 )

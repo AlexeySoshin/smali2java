@@ -1,10 +1,9 @@
 package parser
 
 import (
-
+	"fmt"
 	"github.com/alexeysoshin/smali2java/smali"
 	"strings"
-	"fmt"
 )
 
 type SGetParser struct {
@@ -14,7 +13,7 @@ type SGetParser struct {
 func (p *SGetParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if len(p.headers) == 0 {
-		p.headers = map[string]bool{smali.SGet : true, smali.SGetObject : true}
+		p.headers = map[string]bool{smali.SGet: true, smali.SGetObject: true}
 	}
 
 	_, correctHeader := p.headers[currentLine[0]]

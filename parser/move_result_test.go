@@ -1,11 +1,10 @@
 package parser
 
 import (
-
 	"strings"
 
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // move-result v0

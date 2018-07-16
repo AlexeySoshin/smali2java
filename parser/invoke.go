@@ -1,14 +1,13 @@
 package parser
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 )
 
 type InvokeParser struct {
 	headers map[string]bool
 }
-
 
 func (p *InvokeParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	//"{p0}, Lcom/checker/HttpRequest;->post(Ljava/lang/CharSequence;)Lcom/checker/HttpRequest"

@@ -64,4 +64,3 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 	}()
 
 }
-

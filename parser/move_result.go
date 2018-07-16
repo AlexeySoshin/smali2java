@@ -13,7 +13,7 @@ type MoveResultParser struct {
 func (p *MoveResultParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if len(p.headers) == 0 {
-		p.headers = map[string]bool{smali.MoveResult : true, smali.MoveResultObject: true}
+		p.headers = map[string]bool{smali.MoveResult: true, smali.MoveResultObject: true}
 	}
 
 	_, correctHeader := p.headers[currentLine[0]]
@@ -24,11 +24,9 @@ func (p *MoveResultParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	variableName := currentLine[1]
 
-
-
 	previousLine := javaFile.Last()
 
-	previousLine = append([]string{variableName, "=", }, previousLine...)
+	previousLine = append([]string{variableName, "="}, previousLine...)
 
 	javaFile.ReplaceLast(previousLine)
 

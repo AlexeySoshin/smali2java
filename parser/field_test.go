@@ -1,7 +1,6 @@
 package parser
 
 import (
-
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"

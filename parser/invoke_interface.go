@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"strings"
 	"fmt"
 	"github.com/alexeysoshin/smali2java/smali"
+	"strings"
 )
 
 type InvokeInterfaceParser struct {
@@ -11,9 +11,9 @@ type InvokeInterfaceParser struct {
 }
 
 type MethodSignature struct {
-	ClassName string
-	MethodName string
-	Arguments string
+	ClassName   string
+	MethodName  string
+	Arguments   string
 	ReturnValue string
 }
 
@@ -21,7 +21,7 @@ func (p *InvokeInterfaceParser) Parse(javaFile *JavaFile, currentLine Line) erro
 	//invoke-interface {v2, v3, v5}, Landroid/content/SharedPreferences;->getBoolean(Ljava/lang/String;Z)Z
 
 	if len(p.headers) == 0 {
-		p.headers = map[string]bool{smali.InvokeInterface : true, smali.InvokeVirtual: true}
+		p.headers = map[string]bool{smali.InvokeInterface: true, smali.InvokeVirtual: true}
 	}
 
 	_, correctHeader := p.headers[currentLine[0]]
@@ -34,7 +34,7 @@ func (p *InvokeInterfaceParser) Parse(javaFile *JavaFile, currentLine Line) erro
 		classIndex = i
 		currentPart := currentLine[classIndex]
 
-		if currentPart[:len(currentPart) - 1] == "}" {
+		if currentPart[:len(currentPart)-1] == "}" {
 			break
 		}
 	}
@@ -42,7 +42,7 @@ func (p *InvokeInterfaceParser) Parse(javaFile *JavaFile, currentLine Line) erro
 	variables := p.parseVariables(strings.Join(currentLine[1:classIndex], ""))
 	classAndMethod := p.parseClassAndMethod(currentLine[classIndex])
 
-	line := []string{"((", classAndMethod.ClassName, ")",variables[0],").",classAndMethod.MethodName,"(",strings.Join(variables[1:], ", "),");", " //", strings.Join(currentLine, " ")}
+	line := []string{"((", classAndMethod.ClassName, ")", variables[0], ").", classAndMethod.MethodName, "(", strings.Join(variables[1:], ", "), ");", " //", strings.Join(currentLine, " ")}
 	javaFile.AddLine(line)
 
 	return nil
@@ -53,13 +53,12 @@ func (p *InvokeInterfaceParser) parseClassAndMethod(classAndMethodString string)
 	argumentsEnd := strings.Index(classAndMethodString, ")")
 
 	signature.ClassName = GetClassName(classAndMethodString[:arrowIndex])
-	signature.MethodName = classAndMethodString[arrowIndex+len(smali.Arrow):argumentsStart]
-	signature.Arguments = classAndMethodString[argumentsStart+1:argumentsEnd]
+	signature.MethodName = classAndMethodString[arrowIndex+len(smali.Arrow) : argumentsStart]
+	signature.Arguments = classAndMethodString[argumentsStart+1 : argumentsEnd]
 	signature.ReturnValue = GetClassName(classAndMethodString[argumentsEnd+1:])
 
 	return signature
 }
-
 
 func (p *InvokeInterfaceParser) parseVariables(variablesString string) (variables []string) {
 
@@ -76,8 +75,8 @@ func (p *InvokeInterfaceParser) parseVariables(variablesString string) (variable
 			v2 = v2[1:]
 		}
 		// Cut trailing
-		if v2[len(v2) - 1:] == "}" {
-			v2 = v2[:len(v2) - 1]
+		if v2[len(v2)-1:] == "}" {
+			v2 = v2[:len(v2)-1]
 		}
 
 		variables = append(variables, v2)

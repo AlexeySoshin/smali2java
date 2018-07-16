@@ -1,6 +1,5 @@
 package parser
 
-
 type WrongHeaderError struct {
 	expected string
 	actual   string

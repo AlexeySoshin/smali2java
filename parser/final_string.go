@@ -2,7 +2,7 @@ package parser
 
 import "strings"
 
-type FinalStringParser struct {}
+type FinalStringParser struct{}
 
 func (p *FinalStringParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	variableName := currentLine[1]

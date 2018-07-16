@@ -1,14 +1,13 @@
 package parser
 
 import (
-	"testing"
-	"strings"
 	"github.com/stretchr/testify/assert"
+	"strings"
+	"testing"
 )
 
 func TestClass(t *testing.T) {
 	input := ".class public Lcom/checker/StatusChecker;"
-
 
 	javaFile := &JavaFile{}
 	(&ClassParser{}).Parse(javaFile, strings.Fields(input))

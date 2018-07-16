@@ -1,10 +1,10 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java/types"
-	"strings"
-	"github.com/alexeysoshin/smali2java/smali"
 	"fmt"
+	"github.com/alexeysoshin/smali2java/java/types"
+	"github.com/alexeysoshin/smali2java/smali"
+	"strings"
 )
 
 type Line []string
@@ -28,7 +28,7 @@ func (f *JavaFile) First() Line {
 }
 
 func (f *JavaFile) Last() Line {
-	return f.Lines[len(f.Lines) - 1]
+	return f.Lines[len(f.Lines)-1]
 }
 
 func (f *JavaFile) indentate(line Line) Line {
@@ -42,7 +42,7 @@ func (f *JavaFile) indentate(line Line) Line {
 }
 
 func (f *JavaFile) ReplaceLast(l Line) {
-	f.Lines[len(f.Lines) - 1] = f.indentate(l)
+	f.Lines[len(f.Lines)-1] = f.indentate(l)
 }
 
 func (f *JavaFile) Print() {
@@ -58,7 +58,6 @@ func (f *JavaFile) ParseLine(line string) error {
 
 	} else {
 		opcode := splitLine[0]
-
 
 		switch opcode {
 		case smali.Class:
@@ -115,11 +114,11 @@ func (f *JavaFile) ParseLine(line string) error {
 				f.Indent++
 			} else if strings.Index(opcode, ":cond") >= 0 {
 				f.Indent--
-				f.AddLine([]string {"}", "//", strings.Join(splitLine, "")})
+				f.AddLine([]string{"}", "//", strings.Join(splitLine, "")})
 
 			} else if strings.Index(opcode, ":goto") >= 0 {
 				f.Indent--
-				f.AddLine([]string {"}", "//", strings.Join(splitLine, "")})
+				f.AddLine([]string{"}", "//", strings.Join(splitLine, "")})
 
 			} else {
 				// Something that was not parsed

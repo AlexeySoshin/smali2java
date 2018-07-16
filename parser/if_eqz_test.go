@@ -1,11 +1,10 @@
 package parser
 
 import (
-	"testing"
-	"strings"
 	"github.com/stretchr/testify/assert"
+	"strings"
+	"testing"
 )
-
 
 func TestIfEqz(t *testing.T) {
 	//const/4 v1, 0x0

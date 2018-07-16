@@ -3,10 +3,9 @@ package parser
 import (
 	"strings"
 
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
-
 
 func TestInvokeInterface(t *testing.T) {
 	javaFile := &JavaFile{}

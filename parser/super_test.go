@@ -1,11 +1,10 @@
 package parser
 
 import (
-	"strings"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
-
 
 func TestSuperObject(t *testing.T) {
 
@@ -33,4 +32,3 @@ func TestSuperClass(t *testing.T) {
 
 	assert.Equal(t, expectedOutput, output)
 }
-

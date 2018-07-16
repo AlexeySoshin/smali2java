@@ -19,7 +19,6 @@ func TestParseSGet(t *testing.T) {
 	assert.Equal(t, expectedOutput, output)
 }
 
-
 func TestParseSGetObject(t *testing.T) {
 
 	input := "sget-object v0, Lcom/checker/StatusChecker;->result:Lcom/checker/CheckResult;"
