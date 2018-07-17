@@ -5,6 +5,7 @@ import (
 	"github.com/alexeysoshin/smali2java/java/types"
 	"github.com/alexeysoshin/smali2java/smali"
 	"strings"
+	"github.com/alexeysoshin/smali2java/java"
 )
 
 type Line []string
@@ -37,6 +38,18 @@ func (f *JavaFile) Last() Line {
 	return f.Lines[len(f.Lines)-1]
 }
 
+func (f *JavaFile) LastClassDeclaration() (Line, int) {
+	for i := len(f.Lines)-1; i >= 0; i-- {
+		line := f.Lines[i]
+		for _, word := range line {
+			if word == java.Class {
+				return line, i
+			}
+		}
+	}
+	return nil, -1
+}
+
 func (f *JavaFile) indentate(line Line) Line {
 	if f.Indent < 1 {
 		return line
@@ -49,6 +62,10 @@ func (f *JavaFile) indentate(line Line) Line {
 
 func (f *JavaFile) ReplaceLast(l Line) {
 	f.Lines[len(f.Lines)-1] = f.indentate(l)
+}
+
+func (f *JavaFile) Replace(i int, line Line) {
+	f.Lines[i] = line
 }
 
 func (f *JavaFile) Print() {
