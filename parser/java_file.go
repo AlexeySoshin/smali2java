@@ -10,7 +10,10 @@ import (
 type Line []string
 
 func (l Line) String() string {
-	return strings.Replace(strings.Join(l, " "), "  ", " ", -1)
+	join := strings.Join(l, " ")
+	replace := strings.Replace(join, "  ", " ", -1)
+	trimSpace := strings.TrimRight(replace, " ")
+	return trimSpace
 }
 
 type JavaFile struct {
@@ -23,7 +26,6 @@ type JavaFile struct {
 }
 
 func (f *JavaFile) AddLine(line Line) {
-
 	f.Lines = append(f.Lines, f.indentate(line))
 }
 

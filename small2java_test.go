@@ -26,3 +26,10 @@ func TestConvertSmali2(t *testing.T) {
 
 	wg.Wait()
 }
+
+func TestConvertSmaliFC(t *testing.T) {
+	wg := &sync.WaitGroup{}
+	convertSmali("./test_data/fc.smali", wg)
+
+	wg.Wait()
+}

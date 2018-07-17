@@ -14,7 +14,20 @@ func TestFieldParser(t *testing.T) {
 
 	expectedOutput := "public static Integer id ;"
 
-	output := strings.Join(javaFile.First(), " ")
+	output := javaFile.First().String()
+
+	assert.Equal(t, expectedOutput, output)
+}
+
+func TestSynteticField(t *testing.T) {
+	input := ".field final synthetic a:Lcom/lifx/app/MainActivity;"
+
+	javaFile := &JavaFile{}
+	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
+
+	expectedOutput := "final com.lifx.app.MainActivity a ; //synthetic"
+
+	output := javaFile.First().String()
 
 	assert.Equal(t, expectedOutput, output)
 }

@@ -7,15 +7,22 @@ import (
 type ClassParser struct{}
 
 func (p *ClassParser) Parse(javaFile *JavaFile, currentLine Line) error {
-	accessor := currentLine[1]
+	accessor := ""
 
-	classNameIndex := 2
+	classNameIndex := 1
+
+	if java.Modifiers[currentLine[classNameIndex]] {
+		accessor = currentLine[classNameIndex]
+		classNameIndex++
+	}
+
 	interfaceOrAbstract := ""
 
 	if currentLine[classNameIndex] == java.Interface {
 		interfaceOrAbstract = java.Interface
 		classNameIndex++
 	}
+	// "interface abstract" is a valid declaration
 	if currentLine[classNameIndex] == java.Abstract {
 		interfaceOrAbstract = java.Abstract
 		classNameIndex++

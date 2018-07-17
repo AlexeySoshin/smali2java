@@ -6,7 +6,20 @@ import (
 	"testing"
 )
 
-func TestClass(t *testing.T) {
+func TestClassWithoutModifier(t *testing.T) {
+	input := ".class Lcom/lifx/app/MainActivity$4;"
+
+	javaFile := &JavaFile{}
+	(&ClassParser{}).Parse(javaFile, strings.Fields(input))
+
+	expectedOutput := " class com.lifx.app.MainActivity$4 {"
+
+	output := javaFile.First().String()
+
+	assert.Equal(t, expectedOutput, output)
+}
+
+func TestPublicClass(t *testing.T) {
 	input := ".class public Lcom/checker/StatusChecker;"
 
 	javaFile := &JavaFile{}
