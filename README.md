@@ -5,8 +5,12 @@ This project attempts to create a valid Java source code from disassembled code 
 
 Read the specification here: https://source.android.com/devices/tech/dalvik/dalvik-bytecode.html
 
+Why would you need it if there are tools like https://bytecodeviewer.com/? <br />
+* It's command line
+* Allows you to use tools like `grep` on the output
+
 ## Prerequisites
-* Go 1.7
+* Go 1.9
 
 ## Building
 ```
