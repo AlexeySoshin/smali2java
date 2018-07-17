@@ -80,6 +80,8 @@ func (f *JavaFile) ParseLine(line string) error {
 		case smali.Method:
 			(&MethodParser{}).Parse(f, splitLine)
 			f.Indent++
+		case smali.Implements:
+			(&ImplementsParser{}).Parse(f, splitLine)
 		case smali.Field:
 			(&FieldParser{}).Parse(f, splitLine)
 		case smali.Super:

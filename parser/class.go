@@ -29,7 +29,17 @@ func (p *ClassParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	}
 
 	name := GetClassName(currentLine[classNameIndex])
-	line := []string{accessor, interfaceOrAbstract, java.Class, name, "{"}
+	var line []string
+
+	if accessor != "" {
+		line = append(line, accessor)
+	}
+
+	if interfaceOrAbstract != "" {
+		line = append(line, interfaceOrAbstract)
+	}
+
+	line = append(line, java.Class, name, "{")
 
 	javaFile.AddLine(line)
 	javaFile.ClassName = name

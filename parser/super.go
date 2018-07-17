@@ -11,12 +11,11 @@ func (p *SuperParser) Parse(javaFile *JavaFile, splitLine []string) error {
 	super := GetClassName(splitLine[1])
 
 	if super != classes.Object {
-
-		classDeclarationLine := javaFile.Last()
-		accessor := classDeclarationLine[0]
-		name := classDeclarationLine[3]
-		line := []string{accessor, java.Class, name, java.Extends, super, "{"}
-		javaFile.AddLine(line)
+		line := javaFile.Last()
+		// Remove opening bracket
+		line = line[:len(line)-1]
+		line = append(line, java.Extends, super, "{")
+		javaFile.ReplaceLast(line)
 	}
 
 	return nil

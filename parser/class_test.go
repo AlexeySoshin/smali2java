@@ -12,7 +12,7 @@ func TestClassWithoutModifier(t *testing.T) {
 	javaFile := &JavaFile{}
 	(&ClassParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := " class com.lifx.app.MainActivity$4 {"
+	expectedOutput := "class com.lifx.app.MainActivity$4 {"
 
 	output := javaFile.First().String()
 

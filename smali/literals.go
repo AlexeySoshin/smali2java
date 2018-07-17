@@ -25,4 +25,5 @@ const (
 	IfEqz            = "if-eqz"
 	Goto             = "goto"
 	TryStart         = ":try_start"
+	Implements       = ".implements"
 )
