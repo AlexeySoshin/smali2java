@@ -47,3 +47,17 @@ func TestAbstractMethod(t *testing.T) {
 
 	assert.Equal(t, expectedOutput, output)
 }
+
+func TestDeclaredSyncrhonizedMethod(t *testing.T) {
+	javaFile := &JavaFile{}
+	input := ".method public declared-synchronized a()Lcom/google/android/gms/analytics/Tracker;"
+
+	expectedOutput := "public  synchronized com.google.android.gms.analytics.Tracker a (  ) {"
+
+	parser := MethodParser{}
+	parser.Parse(javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.First(), " ")
+
+	assert.Equal(t, expectedOutput, output)
+}

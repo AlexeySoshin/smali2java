@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"github.com/alexeysoshin/smali2java/java"
+	"github.com/alexeysoshin/smali2java/smali"
 	"strings"
 )
 
@@ -12,6 +13,7 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	accessor := currentLine[1]
 	// Since they can't be both, we can use one variable
 	staticOrAbstract := ""
+	synchronized := ""
 	smaliMethod := ""
 	method := ""
 	methodNameIndex := 2
@@ -21,6 +23,11 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		methodNameIndex++
 	} else if currentLine[methodNameIndex] == java.Abstract {
 		staticOrAbstract = java.Abstract
+		methodNameIndex++
+	}
+
+	if currentLine[methodNameIndex] == smali.DeclaredSynchronized {
+		synchronized = java.Synchronized
 		methodNameIndex++
 	}
 
@@ -34,6 +41,9 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	} else {
 		argumentsIndex := strings.Index(smaliMethod, "(")
 		returnValueIndex := strings.Index(smaliMethod, ")")
+		if argumentsIndex <= 0 {
+			fmt.Println(smaliMethod)
+		}
 		method = smaliMethod[0:argumentsIndex]
 		argumentsString := smaliMethod[argumentsIndex+1 : returnValueIndex]
 		returnValue = GetClassName(smaliMethod[returnValueIndex+1:])
@@ -48,7 +58,11 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	}
 
-	line := []string{accessor, staticOrAbstract, returnValue, method, "(", strings.Join(arguments, ","), ")", "{"}
+	line := []string{accessor,
+		staticOrAbstract,
+		synchronized,
+		returnValue,
+		method, "(", strings.Join(arguments, ","), ")", "{"}
 	javaFile.AddLine(line)
 
 	return nil
