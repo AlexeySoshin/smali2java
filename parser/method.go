@@ -15,6 +15,7 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	staticOrAbstract := ""
 	synchronized := ""
 	smaliMethod := ""
+	final := ""
 	method := ""
 	methodNameIndex := 2
 
@@ -31,6 +32,11 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		methodNameIndex++
 	}
 
+	if currentLine[methodNameIndex] == smali.Final {
+		final = java.Final
+		methodNameIndex++
+	}
+
 	smaliMethod = currentLine[methodNameIndex]
 
 	returnValue := ""
@@ -42,7 +48,7 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		argumentsIndex := strings.Index(smaliMethod, "(")
 		returnValueIndex := strings.Index(smaliMethod, ")")
 		if argumentsIndex <= 0 {
-			fmt.Println(smaliMethod)
+			fmt.Println(currentLine)
 		}
 		method = smaliMethod[0:argumentsIndex]
 		argumentsString := smaliMethod[argumentsIndex+1 : returnValueIndex]
@@ -61,6 +67,7 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	line := []string{accessor,
 		staticOrAbstract,
 		synchronized,
+		final,
 		returnValue,
 		method, "(", strings.Join(arguments, ","), ")", "{"}
 	javaFile.AddLine(line)

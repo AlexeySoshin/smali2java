@@ -61,3 +61,17 @@ func TestDeclaredSyncrhonizedMethod(t *testing.T) {
 
 	assert.Equal(t, expectedOutput, output)
 }
+
+func TestFinalMethod(t *testing.T) {
+	javaFile := &JavaFile{}
+	input := ".method public final a(Ljava/lang/Throwable;)Lcom/lifx/core/transport/rx/ObservableResult;"
+
+	expectedOutput := "public   final com.lifx.core.transport.rx.ObservableResult a ( java.lang.Throwable p0 ) {"
+
+	parser := MethodParser{}
+	parser.Parse(javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.First(), " ")
+
+	assert.Equal(t, expectedOutput, output)
+}
