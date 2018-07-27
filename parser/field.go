@@ -1,10 +1,10 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
-	"strings"
 	"fmt"
+	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/smali"
+	"strings"
 )
 
 type FieldParser struct{}

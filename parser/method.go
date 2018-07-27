@@ -7,15 +7,17 @@ import (
 	"strings"
 )
 
-type MethodParser struct{}
+type MethodParser struct {
+	synchronized bool
+	final        bool
+	varargs      bool
+}
 
 func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	accessor := currentLine[1]
 	// Since they can't be both, we can use one variable
 	staticOrAbstract := ""
-	synchronized := ""
 	smaliMethod := ""
-	final := ""
 	bridgeOrSynthetic := ""
 	method := ""
 	methodNameIndex := 2
@@ -29,12 +31,12 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	}
 
 	if currentLine[methodNameIndex] == smali.DeclaredSynchronized {
-		synchronized = java.Synchronized
+		p.synchronized = true
 		methodNameIndex++
 	}
 
 	if currentLine[methodNameIndex] == smali.Final {
-		final = java.Final
+		p.final = true
 		methodNameIndex++
 	}
 
@@ -45,6 +47,11 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if currentLine[methodNameIndex] == smali.Synthetic {
 		bridgeOrSynthetic += "//synthethic"
+		methodNameIndex++
+	}
+
+	if currentLine[methodNameIndex] == smali.VarArgs {
+		p.varargs = true
 		methodNameIndex++
 	}
 
@@ -66,21 +73,38 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		returnValue = GetClassName(smaliMethod[returnValueIndex+1:])
 
 		if len(argumentsString) > 0 {
-			smaliArguments := strings.Split(argumentsString, ",")
+			smaliArguments := strings.Split(argumentsString, ";")
 
-			for i, arg := range smaliArguments {
-				arguments = append(arguments, fmt.Sprintf("%s p%d", GetClassName(arg), i))
+			// Last element will be empty, so we throw it away
+			for i := 0; i < len(smaliArguments)-1; i++ {
+				smaliArgument := smaliArguments[i]
+				var javaArgument string
+				if p.varargs && i == len(smaliArguments)-2 {
+					javaArgument = fmt.Sprintf("%s... p%d", GetClassName(smaliArgument), i)
+				} else {
+					javaArgument = fmt.Sprintf("%s p%d", GetClassName(smaliArgument), i)
+				}
+				arguments = append(arguments, javaArgument)
 			}
 		}
 
 	}
 
-	line := []string{accessor,
-		staticOrAbstract,
-		synchronized,
-		final,
-		returnValue,
-		method, "(", strings.Join(arguments, ","), ")", "{", bridgeOrSynthetic}
+	line := []string{accessor, staticOrAbstract}
+
+	if p.synchronized {
+		line = append(line, java.Synchronized)
+	}
+
+	if p.final {
+		line = append(line, java.Final)
+	}
+
+	line = append(line, returnValue, method, "(", strings.Join(arguments, ", "), ")", "{")
+
+	if bridgeOrSynthetic != "" {
+		line = append(line, bridgeOrSynthetic)
+	}
 	javaFile.AddLine(line)
 
 	return nil

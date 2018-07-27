@@ -26,7 +26,8 @@ const (
 	Goto             = "goto"
 	TryStart         = ":try_start"
 	Implements       = ".implements"
-	Final 			 = "final"
-	Synthetic 		 = "synthetic"
-	Bridge			 = "bridge"
+	Final            = "final"
+	Synthetic        = "synthetic"
+	Bridge           = "bridge"
+	VarArgs          = "varargs"
 )
