@@ -7,38 +7,74 @@ import (
 	"strings"
 )
 
-type FieldParser struct{}
+type FieldParser struct{
+	accessor string
+	static bool
+	synthetic bool
+	final bool
+}
 
 func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
-	static := ""
-	synthetic := ""
-	final := ""
-	memberAndClassIndex := 2
+	memberAndClassIndex := 1
 	memberAndClass := make([]string, 0)
+
+	// Read the accessor (public/private/protected) if present
+	if java.Modifiers[currentLine[memberAndClassIndex]] {
+		p.accessor = currentLine[memberAndClassIndex]
+		memberAndClassIndex++
+	}
+
+	if memberAndClassIndex >= len(currentLine) {
+		fmt.Println(currentLine)
+	}
+
 	if currentLine[memberAndClassIndex] == java.Static {
-		static = java.Static
+		p.static = true
 		memberAndClassIndex++
 	}
 
 	if currentLine[memberAndClassIndex] == smali.Final {
-		final = java.Final
+		p.final = true
+		memberAndClassIndex++
+	}
+
+	// For Java enum field is just another class
+	if currentLine[memberAndClassIndex] == smali.Enum {
 		memberAndClassIndex++
 	}
 
 	if currentLine[memberAndClassIndex] == smali.Synthetic {
-		synthetic = "//synthetic"
+		p.synthetic = true
 		memberAndClassIndex++
 	}
 
 	memberAndClass = strings.Split(currentLine[memberAndClassIndex], ":")
 
-	accessor := currentLine[1]
 	if len(memberAndClass) < 2 {
 		fmt.Println(currentLine)
 	}
 	className := GetClassName(memberAndClass[1])
 	memberName := memberAndClass[0]
-	line := []string{accessor, static, final, className, memberName, ";", synthetic}
+	var line []string
+
+	if p.accessor != "" {
+		line = append(line, p.accessor)
+	}
+
+	if p.static {
+		line = append(line, java.Static)
+	}
+
+	if p.final {
+		line = append(line, java.Final)
+	}
+
+	line = append(line, className, memberName, ";")
+
+	if p.synthetic {
+		line = append(line, "//synthetic")
+	}
+
 	javaFile.AddLine(line)
 
 	return nil

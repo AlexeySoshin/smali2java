@@ -44,3 +44,29 @@ func TestStaticFinalField(t *testing.T) {
 
 	assert.Equal(t, expectedOutput, output)
 }
+
+func TestNoAccessor(t *testing.T) {
+	input := ".field a:Lcom/lifx/app/controller/ControlTab;"
+
+	javaFile := &JavaFile{}
+	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
+
+	expectedOutput := "com.lifx.app.controller.ControlTab a ;"
+
+	output := javaFile.First().String()
+
+	assert.Equal(t, expectedOutput, output)
+}
+
+func TestEnum(t *testing.T) {
+	input := ".field public static final enum a:Lcom/lifx/app/controller/ControlTab;"
+
+	javaFile := &JavaFile{}
+	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
+
+	expectedOutput := "public static final com.lifx.app.controller.ControlTab a ;"
+
+	output := javaFile.First().String()
+
+	assert.Equal(t, expectedOutput, output)
+}
