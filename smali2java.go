@@ -40,27 +40,27 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 	log.Printf("Processing %s\n", path)
 	wg.Add(1)
 
-	go func() {
-		file, err := os.Open(path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer file.Close()
+	//go func() {
+	file, err := os.Open(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
 
-		javaFile := parser.JavaFile{}
-		scanner := bufio.NewScanner(file)
-		for scanner.Scan() {
-			//fmt.Println(scanner.Text())
-			javaFile.ParseLine(scanner.Text())
-		}
+	javaFile := parser.JavaFile{}
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		//fmt.Println(scanner.Text())
+		javaFile.ParseLine(scanner.Text())
+	}
 
-		if err := scanner.Err(); err != nil {
-			log.Fatal(err)
-		}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
 
-		javaFile.Print()
+	javaFile.Print()
 
-		wg.Done()
-	}()
+	wg.Done()
+	//}()
 
 }
