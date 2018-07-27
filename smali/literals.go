@@ -27,4 +27,6 @@ const (
 	TryStart         = ":try_start"
 	Implements       = ".implements"
 	Final 			 = "final"
+	Synthetic 		 = "synthetic"
+	Bridge			 = "bridge"
 )

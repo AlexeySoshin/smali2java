@@ -25,7 +25,7 @@ func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		memberAndClassIndex++
 	}
 
-	if currentLine[memberAndClassIndex] == java.Synthetic {
+	if currentLine[memberAndClassIndex] == smali.Synthetic {
 		synthetic = "//synthetic"
 		memberAndClassIndex++
 	}

@@ -16,6 +16,7 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	synchronized := ""
 	smaliMethod := ""
 	final := ""
+	bridgeOrSynthetic := ""
 	method := ""
 	methodNameIndex := 2
 
@@ -34,6 +35,16 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if currentLine[methodNameIndex] == smali.Final {
 		final = java.Final
+		methodNameIndex++
+	}
+
+	if currentLine[methodNameIndex] == smali.Bridge {
+		bridgeOrSynthetic = "//bridge"
+		methodNameIndex++
+	}
+
+	if currentLine[methodNameIndex] == smali.Synthetic {
+		bridgeOrSynthetic += "//synthethic"
 		methodNameIndex++
 	}
 
@@ -69,7 +80,7 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		synchronized,
 		final,
 		returnValue,
-		method, "(", strings.Join(arguments, ","), ")", "{"}
+		method, "(", strings.Join(arguments, ","), ")", "{", bridgeOrSynthetic}
 	javaFile.AddLine(line)
 
 	return nil

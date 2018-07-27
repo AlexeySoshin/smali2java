@@ -75,3 +75,29 @@ func TestFinalMethod(t *testing.T) {
 
 	assert.Equal(t, expectedOutput, output)
 }
+
+func TestSyntheticMethod(t *testing.T) {
+	javaFile := &JavaFile{}
+	input := ".method public synthetic apply(Ljava/lang/Object;)Ljava/lang/Object;"
+
+	expectedOutput := "public    java.lang.Object apply ( java.lang.Object p0 ) { //synthethic"
+
+	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.First(), " ")
+
+	assert.Equal(t, expectedOutput, output)
+}
+
+func TestBridgeMethod(t *testing.T) {
+	javaFile := &JavaFile{}
+	input := ".method public static bridge synthetic a(Lcom/lifx/app/DiagnosticsActivity$Companion;Landroid/content/Context;Lcom/lifx/core/Client;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V"
+
+	expectedOutput := "public static   void a ( com.lifx.app.DiagnosticsActivity$Companion;Landroid.content.Context;Lcom.lifx.core.Client;Lkotlin.jvm.functions.Function0;ILjava.lang.Object p0 ) { //bridge//synthethic"
+
+	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.First(), " ")
+
+	assert.Equal(t, expectedOutput, output)
+}

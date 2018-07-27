@@ -5,7 +5,6 @@ const (
 	Extends      = "extends"
 	Implements   = "implements"
 	Static       = "static"
-	Synthetic    = "synthetic"
 	Abstract     = "abstract"
 	Interface    = "interface"
 	Int          = "int"
