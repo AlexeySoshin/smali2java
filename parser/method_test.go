@@ -26,8 +26,7 @@ func TestMethodStaticWithParameters(t *testing.T) {
 
 	expectedOutput := "private static java.lang.String readUrl ( java.lang.String p0 ) {"
 
-	parser := MethodParser{}
-	parser.Parse(javaFile, strings.Fields(input))
+	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
 
 	output := strings.Join(javaFile.First(), " ")
 
@@ -52,7 +51,7 @@ func TestDeclaredSyncrhonizedMethod(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method public declared-synchronized a()Lcom/google/android/gms/analytics/Tracker;"
 
-	expectedOutput := "public  synchronized com.google.android.gms.analytics.Tracker a (  ) {"
+	expectedOutput := "public synchronized com.google.android.gms.analytics.Tracker a (  ) {"
 
 	parser := MethodParser{}
 	parser.Parse(javaFile, strings.Fields(input))
@@ -66,7 +65,7 @@ func TestFinalMethod(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method public final a(Ljava/lang/Throwable;)Lcom/lifx/core/transport/rx/ObservableResult;"
 
-	expectedOutput := "public  final com.lifx.core.transport.rx.ObservableResult a ( java.lang.Throwable p0 ) {"
+	expectedOutput := "public final com.lifx.core.transport.rx.ObservableResult a ( java.lang.Throwable p0 ) {"
 
 	parser := MethodParser{}
 	parser.Parse(javaFile, strings.Fields(input))
@@ -80,7 +79,7 @@ func TestSyntheticMethod(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method public synthetic apply(Ljava/lang/Object;)Ljava/lang/Object;"
 
-	expectedOutput := "public  java.lang.Object apply ( java.lang.Object p0 ) { //synthethic"
+	expectedOutput := "public java.lang.Object apply ( java.lang.Object p0 ) { //synthethic"
 
 	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
 
@@ -93,7 +92,7 @@ func TestBridgeMethod(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method public static bridge synthetic a(Lcom/lifx/app/DiagnosticsActivity$Companion;Landroid/content/Context;Lcom/lifx/core/Client;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V"
 
-	expectedOutput := "public static void a ( com.lifx.app.DiagnosticsActivity$Companion p0, android.content.Context p1, com.lifx.core.Client p2, kotlin.jvm.functions.Function0 p3, Ljava.lang.Object p4 ) { //bridge//synthethic"
+	expectedOutput := "public static void a ( com.lifx.app.DiagnosticsActivity$Companion p0, android.content.Context p1, com.lifx.core.Client p2, kotlin.jvm.functions.Function0 p3, Integer p4, java.lang.Object p5 ) { //bridge//synthethic"
 
 	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
 
@@ -106,7 +105,20 @@ func TestVarargsMethod(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method private final varargs a(Ljava/lang/StringBuilder;Ljava/lang/String;[Ljava/lang/Object;)V"
 
-	expectedOutput := "private  final void a ( java.lang.StringBuilder p0, java.lang.String p1, java.lang.Object... p2 ) {"
+	expectedOutput := "private final void a ( java.lang.StringBuilder p0, java.lang.String p1, java.lang.Object... p2 ) {"
+
+	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.First(), " ")
+
+	assert.Equal(t, expectedOutput, output)
+}
+
+func TestNoAccessorMethod(t *testing.T) {
+	input := ".method a(FZ)V"
+	javaFile := &JavaFile{}
+
+	expectedOutput := "void a ( Float p0, Boolean p1 ) {"
 
 	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
 
