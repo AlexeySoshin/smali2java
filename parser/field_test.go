@@ -31,3 +31,16 @@ func TestSynteticField(t *testing.T) {
 
 	assert.Equal(t, expectedOutput, output)
 }
+
+func TestStaticFinalField(t *testing.T) {
+	input := ".field public static final a:Lcom/lifx/app/DiagnosticsActivity$Companion$queryWANState$2$1;"
+
+	javaFile := &JavaFile{}
+	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
+
+	expectedOutput := "public static final com.lifx.app.DiagnosticsActivity$Companion$queryWANState$2$1 a ;"
+
+	output := javaFile.First().String()
+
+	assert.Equal(t, expectedOutput, output)
+}

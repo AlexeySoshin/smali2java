@@ -26,4 +26,5 @@ const (
 	Goto             = "goto"
 	TryStart         = ":try_start"
 	Implements       = ".implements"
+	Final 			 = "final"
 )
