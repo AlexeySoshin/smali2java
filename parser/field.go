@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-type FieldParser struct{
-	accessor string
-	static bool
+type FieldParser struct {
+	accessor  string
+	static    bool
 	synthetic bool
-	final bool
+	final     bool
 }
 
 func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {

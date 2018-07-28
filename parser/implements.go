@@ -18,4 +18,3 @@ func (p *ImplementsParser) Parse(javaFile *JavaFile, splitLine []string) error {
 
 	return nil
 }
-

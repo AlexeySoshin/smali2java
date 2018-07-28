@@ -30,5 +30,5 @@ const (
 	Synthetic        = "synthetic"
 	Bridge           = "bridge"
 	VarArgs          = "varargs"
-	Enum			 = "enum"
+	Enum             = "enum"
 )

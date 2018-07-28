@@ -2,8 +2,8 @@ package parser
 
 import (
 	"github.com/stretchr/testify/assert"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func TestImplements(t *testing.T) {
