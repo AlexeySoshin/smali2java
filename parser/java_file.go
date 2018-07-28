@@ -2,10 +2,10 @@ package parser
 
 import (
 	"fmt"
+	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/java/types"
 	"github.com/alexeysoshin/smali2java/smali"
 	"strings"
-	"github.com/alexeysoshin/smali2java/java"
 )
 
 type Line []string
@@ -24,6 +24,7 @@ type JavaFile struct {
 	Implements []string
 	ClassName  string
 	Indent     int
+	smaliLines int
 }
 
 func (f *JavaFile) AddLine(line Line) {
@@ -39,7 +40,7 @@ func (f *JavaFile) Last() Line {
 }
 
 func (f *JavaFile) LastClassDeclaration() (Line, int) {
-	for i := len(f.Lines)-1; i >= 0; i-- {
+	for i := len(f.Lines) - 1; i >= 0; i-- {
 		line := f.Lines[i]
 		for _, word := range line {
 			if word == java.Class {
@@ -76,6 +77,7 @@ func (f *JavaFile) Print() {
 
 func (f *JavaFile) ParseLine(line string) error {
 	splitLine := strings.Fields(line)
+	f.smaliLines++
 
 	if len(splitLine) == 0 {
 
@@ -182,11 +184,18 @@ func GetClassName(jvmName string) string {
 
 	} else {
 
+		// If starts with array, drop it
 		if splitJvmName[0][0:1] == "[" {
-
+			splitJvmName[0] = splitJvmName[0][1:]
 		}
 		joinedName := strings.Join(splitJvmName, ".")
-		return joinedName[1 : len(joinedName)-1]
+
+		// If ends with semicolon, drop it
+		if joinedName[len(joinedName)-1:] == ";" {
+			joinedName = joinedName[:len(joinedName)-1]
+		}
+
+		return joinedName[1:]
 	}
 
 }

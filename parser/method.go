@@ -8,7 +8,7 @@ import (
 )
 
 type MethodParser struct {
-	accessor string
+	accessor     string
 	synchronized bool
 	final        bool
 	varargs      bool
@@ -39,13 +39,13 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		methodNameIndex++
 	}
 
-	if currentLine[methodNameIndex] == smali.DeclaredSynchronized {
-		p.synchronized = true
+	if currentLine[methodNameIndex] == smali.Final {
+		p.final = true
 		methodNameIndex++
 	}
 
-	if currentLine[methodNameIndex] == smali.Final {
-		p.final = true
+	if currentLine[methodNameIndex] == smali.DeclaredSynchronized {
+		p.synchronized = true
 		methodNameIndex++
 	}
 
@@ -74,9 +74,7 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	} else {
 		argumentsIndex := strings.Index(smaliMethod, "(")
 		returnValueIndex := strings.Index(smaliMethod, ")")
-		if argumentsIndex <= 0 {
-			fmt.Println(currentLine)
-		}
+
 		method = smaliMethod[0:argumentsIndex]
 		argumentsString := smaliMethod[argumentsIndex+1 : returnValueIndex]
 		returnValue = GetClassName(smaliMethod[returnValueIndex+1:])
@@ -115,14 +113,22 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 func (p *MethodParser) parseArguments(argumentsString string) []string {
 	var arguments []string
 
+	isArray := false
 	count := 0
 	for len(argumentsString) > 0 {
 		var javaArgument string
 		// Object
-		if argumentsString[:1] == "[" || argumentsString[:1] == "L" {
+		if argumentsString[:1] == "L" {
 			endOfObjectDeclaration := strings.Index(argumentsString, ";")
+			if endOfObjectDeclaration == -1 {
+				fmt.Println(argumentsString)
+			}
 			javaArgument = GetClassName(argumentsString[:endOfObjectDeclaration])
 			argumentsString = argumentsString[endOfObjectDeclaration+1:]
+		} else if argumentsString[:1] == "[" { // Array
+			argumentsString = argumentsString[1:]
+			isArray = true
+			continue
 		} else { // Primitive
 			javaArgument = GetClassName(argumentsString[:1])
 			argumentsString = argumentsString[1:]
@@ -131,13 +137,15 @@ func (p *MethodParser) parseArguments(argumentsString string) []string {
 		// Last argument can be vararg
 		if p.varargs && len(argumentsString) == 0 {
 			javaArgument = fmt.Sprintf("%s... p%d", javaArgument, count)
+		} else if isArray {
+			isArray = false
+			javaArgument = fmt.Sprintf("%s[] p%d", javaArgument, count)
 		} else {
 			javaArgument = fmt.Sprintf("%s p%d", javaArgument, count)
 		}
 
 		count++
 		arguments = append(arguments, javaArgument)
-
 
 		//smaliArguments := strings.Split(argumentsString, ";")
 

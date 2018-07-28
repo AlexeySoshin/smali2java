@@ -18,6 +18,13 @@ func TestGetClassNameRegularClass(t *testing.T) {
 	assert.Equal(t, "android.content.Context", className)
 }
 
+func TestGetClassNameNoSemicolon(t *testing.T) {
+	input := "Ljava/lang/String"
+	className := GetClassName(input)
+
+	assert.Equal(t, "java.lang.String", className)
+}
+
 func TestGetMethodName(t *testing.T) {
 	input := "robotEnabled:Z"
 

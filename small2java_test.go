@@ -5,14 +5,6 @@ import (
 	"testing"
 )
 
-func TestReturnObject(t *testing.T) {
-
-}
-
-func TestParseSuper(t *testing.T) {
-
-}
-
 func TestConvertSmali(t *testing.T) {
 	wg := &sync.WaitGroup{}
 	convertSmali("./test_data/s.smali", wg)
@@ -32,4 +24,8 @@ func TestConvertSmaliFC(t *testing.T) {
 	convertSmali("./test_data/fc.smali", wg)
 
 	wg.Wait()
+}
+
+func TestConvertSmaliOnProject(t *testing.T) {
+	parseSmaliFiles("./test_data/smali/com/lifx/app/")
 }
