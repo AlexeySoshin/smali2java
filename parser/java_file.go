@@ -14,7 +14,9 @@ func (l Line) String() string {
 	join := strings.Join(l, " ")
 	replace := strings.Replace(join, "  ", " ", -1)
 	trimSpace := strings.TrimRight(replace, " ")
-	return trimSpace
+	noSpaceAfterDot := strings.Replace(trimSpace, ". ", ".", -1)
+	noSpaceBeforeSemicolon := strings.Replace(noSpaceAfterDot, " ;", ";", -1)
+	return noSpaceBeforeSemicolon
 }
 
 type JavaFile struct {
@@ -133,6 +135,8 @@ func (f *JavaFile) ParseLine(line string) error {
 		case smali.IfEqz:
 			(&IfEqzParser{}).Parse(f, splitLine)
 			f.Indent++
+		case smali.IPutObject:
+			(&IPutObjectParser{}).Parse(f, splitLine)
 		default:
 			// Labels
 			if strings.Index(opcode, ":try_start") >= 0 {

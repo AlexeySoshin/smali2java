@@ -12,7 +12,7 @@ func TestFieldParser(t *testing.T) {
 	javaFile := &JavaFile{}
 	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := "public static Integer id ;"
+	expectedOutput := "public static Integer id;"
 
 	output := javaFile.First().String()
 
@@ -25,7 +25,7 @@ func TestSynteticField(t *testing.T) {
 	javaFile := &JavaFile{}
 	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := "final com.lifx.app.MainActivity a ; //synthetic"
+	expectedOutput := "final com.lifx.app.MainActivity a; //synthetic"
 
 	output := javaFile.First().String()
 
@@ -38,7 +38,7 @@ func TestStaticFinalField(t *testing.T) {
 	javaFile := &JavaFile{}
 	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := "public static final com.lifx.app.DiagnosticsActivity$Companion$queryWANState$2$1 a ;"
+	expectedOutput := "public static final com.lifx.app.DiagnosticsActivity$Companion$queryWANState$2$1 a;"
 
 	output := javaFile.First().String()
 
@@ -51,7 +51,7 @@ func TestNoAccessor(t *testing.T) {
 	javaFile := &JavaFile{}
 	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := "com.lifx.app.controller.ControlTab a ;"
+	expectedOutput := "com.lifx.app.controller.ControlTab a;"
 
 	output := javaFile.First().String()
 
@@ -64,7 +64,7 @@ func TestEnum(t *testing.T) {
 	javaFile := &JavaFile{}
 	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := "public static final com.lifx.app.controller.ControlTab a ;"
+	expectedOutput := "public static final com.lifx.app.controller.ControlTab a;"
 
 	output := javaFile.First().String()
 
