@@ -137,6 +137,8 @@ func (f *JavaFile) ParseLine(line string) error {
 			f.Indent++
 		case smali.IPutObject:
 			(&IPutObjectParser{}).Parse(f, splitLine)
+		case smali.IGetObject:
+			(&IGetObjectParser{}).Parse(f, splitLine)
 		default:
 			// Labels
 			if strings.Index(opcode, ":try_start") >= 0 {

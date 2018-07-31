@@ -31,5 +31,6 @@ const (
 	Bridge           = "bridge"
 	VarArgs          = "varargs"
 	Enum             = "enum"
-	IPutObject	     = "iput-object"
+	IPutObject       = "iput-object"
+	IGetObject       = "iget-object"
 )
