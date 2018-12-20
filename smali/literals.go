@@ -33,4 +33,5 @@ const (
 	Enum             = "enum"
 	IPutObject       = "iput-object"
 	IGetObject       = "iget-object"
+	Volatile         = "volatile"
 )

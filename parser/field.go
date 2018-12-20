@@ -2,9 +2,10 @@ package parser
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/smali"
-	"strings"
 )
 
 type FieldParser struct {
@@ -12,6 +13,7 @@ type FieldParser struct {
 	static    bool
 	synthetic bool
 	final     bool
+	volatile  bool
 }
 
 func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
@@ -35,6 +37,11 @@ func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if currentLine[memberAndClassIndex] == smali.Final {
 		p.final = true
+		memberAndClassIndex++
+	}
+
+	if currentLine[memberAndClassIndex] == smali.Volatile {
+		p.volatile = true
 		memberAndClassIndex++
 	}
 
@@ -67,6 +74,10 @@ func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if p.final {
 		line = append(line, java.Final)
+	}
+
+	if p.volatile {
+		line = append(line, java.Volatile)
 	}
 
 	line = append(line, className, memberName, ";")
