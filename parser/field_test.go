@@ -1,18 +1,19 @@
 package parser
 
 import (
-	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFieldParser(t *testing.T) {
-	input := ".field public static id:I"
+	input := ".field public static volatile id:I"
 
 	javaFile := &JavaFile{}
 	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := "public static Integer id;"
+	expectedOutput := "public static volatile Integer id;"
 
 	output := javaFile.First().String()
 
