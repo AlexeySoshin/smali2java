@@ -41,16 +41,9 @@ func parseSmaliFiles(path string) {
 }
 
 func convertSmali(path string, wg *sync.WaitGroup) {
-
-	/*defer func() {
-		if r := recover(); r != nil {
-			fmt.Printf("%s %v\n", path, r)
-		}
-	}()*/
 	fmt.Printf("Processing %s\n", path)
 	wg.Add(1)
 
-	//go func() {
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -60,7 +53,6 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 	javaFile := parser.JavaFile{}
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		//fmt.Println(scanner.Text())
 		javaFile.ParseLine(scanner.Text())
 	}
 
@@ -68,9 +60,7 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 		log.Fatal(err)
 	}
 
-	javaFile.Print()
+	//javaFile.Print()
 
 	wg.Done()
-	//}()
-
 }
