@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -40,8 +41,15 @@ func parseSmaliFiles(path string) {
 	wg.Wait()
 }
 
+var debug = func() bool {
+	return strings.ToLower(os.Getenv("debug")) == "true"
+}()
+
 func convertSmali(path string, wg *sync.WaitGroup) {
-	fmt.Printf("Processing %s\n", path)
+	if debug {
+		fmt.Printf("Processing %s\n", path)
+	}
+
 	wg.Add(1)
 
 	file, err := os.Open(path)
@@ -60,7 +68,9 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 		log.Fatal(err)
 	}
 
-	//javaFile.Print()
+	if debug {
+		javaFile.Print()
+	}
 
 	wg.Done()
 }
