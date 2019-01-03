@@ -8,12 +8,25 @@ import (
 )
 
 func TestFieldParser(t *testing.T) {
-	input := ".field public static volatile id:I"
+	input := ".field public static id:I"
 
 	javaFile := &JavaFile{}
 	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := "public static volatile Integer id;"
+	expectedOutput := "public static Integer id;"
+
+	output := javaFile.First().String()
+
+	assert.Equal(t, expectedOutput, output)
+}
+
+func TestVolatileField(t *testing.T) {
+	input := ".field public volatile id:I"
+
+	javaFile := &JavaFile{}
+	(&FieldParser{}).Parse(javaFile, strings.Fields(input))
+
+	expectedOutput := "public volatile Integer id;"
 
 	output := javaFile.First().String()
 
