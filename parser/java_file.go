@@ -5,6 +5,9 @@ import (
 	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/java/types"
 	"github.com/alexeysoshin/smali2java/smali"
+	"path/filepath"
+	"os"
+	"bufio"
 	"strings"
 )
 
@@ -74,6 +77,19 @@ func (f *JavaFile) Replace(i int, line Line) {
 func (f *JavaFile) Print() {
 	for _, line := range f.Lines {
 		fmt.Println(line)
+	}
+}
+
+func (f *JavaFile) Save(dir string) {
+	var classNameParts = strings.Split(f.ClassName, ".")
+	file, err := os.Create(filepath.Join(dir, classNameParts[len(classNameParts)-1]) + ".java")
+	if (err == nil) {
+		defer file.Close()
+		w := bufio.NewWriter(file)
+		for _, line := range f.Lines {
+			w.WriteString(line.String() + "\n")
+		}
+		w.Flush()
 	}
 }
 
