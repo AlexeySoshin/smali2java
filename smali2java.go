@@ -72,5 +72,7 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 		javaFile.Print()
 	}
 
+	javaFile.Save(filepath.Dir(path))
+
 	wg.Done()
 }
