@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/alexeysoshin/smali2java/java"
-	"github.com/alexeysoshin/smali2java/smali"
+	"../java"
+	"../smali"
 )
 
 type FieldParser struct {

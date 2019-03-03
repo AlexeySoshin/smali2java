@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
-	"github.com/alexeysoshin/smali2java/java/classes"
+	"../java"
+	"../java/classes"
 )
 
 type SuperParser struct{}

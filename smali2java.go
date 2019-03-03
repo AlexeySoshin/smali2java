@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/alexeysoshin/smali2java/parser"
+	"./parser"
 	"log"
 	"os"
 	"path/filepath"

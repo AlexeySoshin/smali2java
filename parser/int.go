@@ -2,8 +2,8 @@ package parser
 
 import (
 	"fmt"
-	"github.com/alexeysoshin/smali2java/java"
-	"github.com/alexeysoshin/smali2java/smali"
+	"../java"
+	"../smali"
 	"strconv"
 	"strings"
 )

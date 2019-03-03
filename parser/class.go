@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/alexeysoshin/smali2java/java"
+	"../java"
 )
 
 type ClassParser struct{}
