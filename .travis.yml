@@ -5,6 +5,7 @@ go:
  - "1.13"
 env:
  - DEBUG=false
+ - CODECOV_TOKEN="50f4959a-734c-4cd3-af19-4d74004bd7d3"
 install:
  - go install
 script:
