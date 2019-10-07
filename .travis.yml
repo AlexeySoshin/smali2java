@@ -2,11 +2,9 @@ language: go
 
 go_import_path: github.com/alexeysoshin/smali2java
 go:
- - 1.11
+ - "1.13"
 env:
  - DEBUG=false
-before_install:
- - go get github.com/stretchr/testify/assert
 install:
  - go install
 script:
