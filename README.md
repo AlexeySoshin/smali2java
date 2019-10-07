@@ -10,7 +10,7 @@ Why would you need it if there are tools like https://bytecodeviewer.com/? <br /
 * Allows you to use tools like `grep` on the output
 
 ## Prerequisites
-* Go 1.9
+* Go 1.13+
 
 ## Building
 ```
