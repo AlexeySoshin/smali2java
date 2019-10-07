@@ -8,4 +8,6 @@ env:
 install:
  - go install
 script:
- - go test -v ./...
+ - go test -v ./... -race -coverprofile=profile.out -covermode=atomic
+after_success:
+ - bash <(curl -s https://codecov.io/bash)
