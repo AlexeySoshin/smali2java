@@ -28,6 +28,10 @@ func parseSmaliFiles(path string) {
 	var wg = sync.WaitGroup{}
 	filepath.Walk(path, func(path string, f os.FileInfo, err error) error {
 
+		if err != nil {
+			log.Printf("Error occurred while walking path %q: %v", path, err)
+			return err
+		}
 		if f.IsDir() {
 			//log.Printf("Skipping directory: %s\n", path)
 		} else if filepath.Ext(path) != smaliExtension {
