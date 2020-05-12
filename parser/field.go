@@ -14,6 +14,7 @@ type FieldParser struct {
 	synthetic bool
 	final     bool
 	volatile  bool
+	transient bool
 }
 
 func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
@@ -55,11 +56,17 @@ func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		memberAndClassIndex++
 	}
 
+	if currentLine[memberAndClassIndex] == smali.Transient {
+		p.transient = true
+		memberAndClassIndex++
+	}
+
 	memberAndClass = strings.Split(currentLine[memberAndClassIndex], ":")
 
 	if len(memberAndClass) < 2 {
 		fmt.Println(currentLine)
 	}
+
 	className := GetClassName(memberAndClass[1])
 	memberName := memberAndClass[0]
 	var line []string
@@ -78,6 +85,10 @@ func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if p.volatile {
 		line = append(line, java.Volatile)
+	}
+
+	if p.transient {
+		line = append(line, java.Transient)
 	}
 
 	line = append(line, className, memberName, ";")
