@@ -34,4 +34,5 @@ const (
 	IPutObject       = "iput-object"
 	IGetObject       = "iget-object"
 	Volatile         = "volatile"
+	Transient        = "transient"
 )
