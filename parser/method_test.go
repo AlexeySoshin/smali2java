@@ -75,6 +75,20 @@ func TestFinalMethod(t *testing.T) {
 	assert.Equal(t, expectedOutput, output)
 }
 
+func TestNativeMethod(t *testing.T) {
+	javaFile := &JavaFile{}
+	input := ".method private native a()V"
+
+	expectedOutput := "private native void a (  ) {"
+
+	parser := MethodParser{}
+	parser.Parse(javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.First(), " ")
+
+	assert.Equal(t, expectedOutput, output)
+}
+
 func TestSyntheticMethod(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method public synthetic apply(Ljava/lang/Object;)Ljava/lang/Object;"

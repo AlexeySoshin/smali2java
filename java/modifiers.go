@@ -6,4 +6,5 @@ const (
 	Final     = "final"
 	Volatile  = "volatile"
 	Transient = "transient"
+	Native    = "native"
 )
