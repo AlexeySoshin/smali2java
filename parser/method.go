@@ -12,6 +12,7 @@ type MethodParser struct {
 	synchronized bool
 	final        bool
 	varargs      bool
+	native       bool
 }
 
 func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
@@ -41,6 +42,11 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if currentLine[methodNameIndex] == smali.Final {
 		p.final = true
+		methodNameIndex++
+	}
+
+	if currentLine[methodNameIndex] == smali.Native {
+		p.native = true
 		methodNameIndex++
 	}
 
@@ -94,6 +100,10 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	if p.synchronized {
 		line = append(line, java.Synchronized)
+	}
+
+	if p.native {
+		line = append(line, java.Native)
 	}
 
 	if p.final {
