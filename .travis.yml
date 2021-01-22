@@ -2,10 +2,10 @@ language: go
 
 go_import_path: github.com/alexeysoshin/smali2java
 go:
- - "1.13"
+ - "1.15"
 install:
  - go install
 script:
  - go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
 after_success:
- - bash <(curl -s https://codecov.io/bash) -t "50f4959a-734c-4cd3-af19-4d74004bd7d3"
+ - bash <(curl -s https://codecov.io/bash)
