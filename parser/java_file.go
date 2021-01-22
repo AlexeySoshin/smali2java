@@ -82,7 +82,7 @@ func (f *JavaFile) Print() {
 func (f *JavaFile) Save(dir string) {
 	var classNameParts = strings.Split(f.ClassName, ".")
 	file, err := os.Create(filepath.Join(dir, classNameParts[len(classNameParts)-1]) + ".java")
-	if (err == nil) {
+	if err == nil {
 		defer file.Close()
 		w := bufio.NewWriter(file)
 		for _, line := range f.Lines {
