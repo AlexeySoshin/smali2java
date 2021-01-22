@@ -8,22 +8,30 @@ import (
 
 func TestClassWithoutModifier(t *testing.T) {
 	input := ".class Lcom/lifx/app/MainActivity$4;"
+	parser := &ClassParser{}
 
 	javaFile := &JavaFile{}
-	(&ClassParser{}).Parse(javaFile, strings.Fields(input))
+	err := parser.Parse(javaFile, strings.Fields(input))
 
-	expectedOutput := "class com.lifx.app.MainActivity$4 {"
+	assert.NoError(t, err)
 
-	output := javaFile.First().String()
+	t.Run("Same as class name", func(t *testing.T) {
+		expectedOutput := "class com.lifx.app.MainActivity$4 {"
 
-	assert.Equal(t, expectedOutput, output)
+		output := javaFile.First().String()
+
+		assert.Equal(t, expectedOutput, output)
+	})
 }
 
 func TestPublicClass(t *testing.T) {
 	input := ".class public Lcom/checker/StatusChecker;"
+	parser := &ClassParser{}
 
 	javaFile := &JavaFile{}
-	(&ClassParser{}).Parse(javaFile, strings.Fields(input))
+	err := parser.Parse(javaFile, strings.Fields(input))
+
+	assert.NoError(t, err)
 
 	expectedOutput := "public class com.checker.StatusChecker {"
 
@@ -34,9 +42,12 @@ func TestPublicClass(t *testing.T) {
 
 func TestAbstractClass(t *testing.T) {
 	input := ".class public interface abstract Landroid/arch/lifecycle/o$a;"
+	parser := &ClassParser{}
 
 	javaFile := &JavaFile{}
-	(&ClassParser{}).Parse(javaFile, strings.Fields(input))
+	err := parser.Parse(javaFile, strings.Fields(input))
+
+	assert.NoError(t, err)
 
 	expectedOutput := "public abstract class android.arch.lifecycle.o$a {"
 

@@ -1,4 +1,4 @@
-package types
+package java
 
 const (
 	Integer = "Integer"

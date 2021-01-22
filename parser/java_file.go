@@ -1,13 +1,12 @@
 package parser
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/alexeysoshin/smali2java/java"
-	"github.com/alexeysoshin/smali2java/java/types"
 	"github.com/alexeysoshin/smali2java/smali"
-	"path/filepath"
 	"os"
-	"bufio"
+	"path/filepath"
 	"strings"
 )
 
@@ -83,7 +82,7 @@ func (f *JavaFile) Print() {
 func (f *JavaFile) Save(dir string) {
 	var classNameParts = strings.Split(f.ClassName, ".")
 	file, err := os.Create(filepath.Join(dir, classNameParts[len(classNameParts)-1]) + ".java")
-	if (err == nil) {
+	if err == nil {
 		defer file.Close()
 		w := bufio.NewWriter(file)
 		for _, line := range f.Lines {
@@ -189,19 +188,19 @@ func GetClassName(jvmName string) string {
 	if len(className) == 1 {
 		switch className[0] {
 		case 'I':
-			return types.Integer
+			return java.Integer
 		case 'Z':
-			return types.Boolean
+			return java.Boolean
 		case 'J':
-			return types.Long
+			return java.Long
 		case 'F':
-			return types.Float
+			return java.Float
 		case 'D':
-			return types.Double
+			return java.Double
 		case 'V':
-			return types.Void
+			return java.Void
 		default:
-			return types.Object
+			return java.Object
 		}
 
 	} else {
