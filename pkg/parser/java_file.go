@@ -3,8 +3,8 @@ package parser
 import (
 	"bufio"
 	"fmt"
-	"github.com/alexeysoshin/smali2java/java"
-	"github.com/alexeysoshin/smali2java/smali"
+	"github.com/alexeysoshin/smali2java/pkg/java"
+	"github.com/alexeysoshin/smali2java/pkg/smali"
 	"os"
 	"path/filepath"
 	"strings"

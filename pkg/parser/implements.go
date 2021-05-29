@@ -1,6 +1,6 @@
 package parser
 
-import "github.com/alexeysoshin/smali2java/java"
+import "github.com/alexeysoshin/smali2java/pkg/java"
 
 type ImplementsParser struct{}
 

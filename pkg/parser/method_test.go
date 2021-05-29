@@ -20,6 +20,20 @@ func TestMethodStatic(t *testing.T) {
 	assert.Equal(t, expectedOutput, output)
 }
 
+func TestMethodProtectedVarargsAbstract(t *testing.T){
+	javaFile := &JavaFile{}
+	input := ".method protected varargs abstract doInBackground([Ljava/lang/Object;)Ljava/lang/Object;"
+
+	expectedOutput := "protected abstract java.lang.Object doInBackground ( java.lang.Object... p0 ) {"
+
+	parser := MethodParser{}
+	parser.Parse(javaFile, strings.Fields(input))
+
+	output := strings.Join(javaFile.First(), " ")
+
+	assert.Equal(t, expectedOutput, output)
+}
+
 func TestMethodStaticWithParameters(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method private static readUrl(Ljava/lang/String;)Ljava/lang/String;"
@@ -93,7 +107,7 @@ func TestSyntheticMethod(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method public synthetic apply(Ljava/lang/Object;)Ljava/lang/Object;"
 
-	expectedOutput := "public java.lang.Object apply ( java.lang.Object p0 ) { //synthethic"
+	expectedOutput := "public java.lang.Object apply ( java.lang.Object p0 ) { // synthetic"
 
 	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
 
@@ -106,9 +120,13 @@ func TestBridgeMethod(t *testing.T) {
 	javaFile := &JavaFile{}
 	input := ".method public static bridge synthetic a(Lcom/lifx/app/DiagnosticsActivity$Companion;Landroid/content/Context;Lcom/lifx/core/Client;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)V"
 
-	expectedOutput := "public static void a ( com.lifx.app.DiagnosticsActivity$Companion p0, android.content.Context p1, com.lifx.core.Client p2, kotlin.jvm.functions.Function0 p3, Integer p4, java.lang.Object p5 ) { //bridge//synthethic"
+	expectedOutput := "public static void a ( com.lifx.app.DiagnosticsActivity$Companion p0, android.content.Context p1, com.lifx.core.Client p2, kotlin.jvm.functions.Function0 p3, Integer p4, java.lang.Object p5 ) { // bridge // synthetic"
 
-	(&MethodParser{}).Parse(javaFile, strings.Fields(input))
+	err := (&MethodParser{}).Parse(javaFile, strings.Fields(input))
+	if err != nil {
+		t.Fatal(err)
+		return 
+	}
 
 	output := strings.Join(javaFile.First(), " ")
 

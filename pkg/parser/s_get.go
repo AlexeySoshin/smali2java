@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	"github.com/alexeysoshin/smali2java/smali"
+	"github.com/alexeysoshin/smali2java/pkg/smali"
 	"strings"
 )
 

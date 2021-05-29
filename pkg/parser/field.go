@@ -2,14 +2,15 @@ package parser
 
 import (
 	"fmt"
+	"github.com/alexeysoshin/smali2java/pkg/parser/token"
 	"strings"
 
-	"github.com/alexeysoshin/smali2java/java"
-	"github.com/alexeysoshin/smali2java/smali"
+	"github.com/alexeysoshin/smali2java/pkg/java"
+	"github.com/alexeysoshin/smali2java/pkg/smali"
 )
 
 type FieldParser struct {
-	accessor  string
+	accessor  *token.Accessor
 	static    bool
 	synthetic bool
 	final     bool
@@ -22,8 +23,8 @@ func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	memberAndClass := make([]string, 0)
 
 	// Read the accessor (public/private/protected) if present
-	if java.Modifiers[currentLine[memberAndClassIndex]] {
-		p.accessor = currentLine[memberAndClassIndex]
+	p.accessor = java.GetAccessorByName(currentLine[memberAndClassIndex])
+	if  p.accessor != nil {
 		memberAndClassIndex++
 	}
 
@@ -71,8 +72,8 @@ func (p *FieldParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	memberName := memberAndClass[0]
 	var line []string
 
-	if p.accessor != "" {
-		line = append(line, p.accessor)
+	if p.accessor != nil {
+		line = append(line, p.accessor.ToJava())
 	}
 
 	if p.static {

@@ -2,86 +2,117 @@ package parser
 
 import (
 	"fmt"
-	"github.com/alexeysoshin/smali2java/java"
-	"github.com/alexeysoshin/smali2java/smali"
+	"github.com/alexeysoshin/smali2java/pkg/java"
+	"github.com/alexeysoshin/smali2java/pkg/parser/token"
 	"strings"
 )
 
 type MethodParser struct {
-	accessor     string
+	accessor     *token.Accessor
 	synchronized bool
 	final        bool
 	varargs      bool
-	native       bool
+	abstract     bool
+	static       bool
+	bridge       bool
+	synthetic    bool
+
+	native bool
+	// parsing fields
+	index int
+}
+
+func (p *MethodParser) parseKeyword(line Line) token.Token {
+	if p.index >= len(line) {
+		return nil
+	}
+
+	str := line[p.index]
+	p.index += 1
+
+	// Check if it's an accessor
+	if v, ok := java.Accessors[str]; ok {
+		return v
+	}
+
+	// Check if it's a non-accessor
+	if v, ok := java.NonAccessors[str]; ok {
+		return v
+	}
+
+	return token.Text{
+		Value: str,
+	}
 }
 
 func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
-	// Since they can't be both, we can use one variable
-	staticOrAbstract := ""
-	smaliMethod := ""
-	bridgeOrSynthetic := ""
-	method := ""
-	methodNameIndex := 1
+	var lastToken *token.Token
+	p.index = 1
+	for ; ; {
+		stopParsing := false
+		t := p.parseKeyword(currentLine)
+		lastToken = &t
 
-	if java.Modifiers[currentLine[methodNameIndex]] {
-		p.accessor = currentLine[methodNameIndex]
-		methodNameIndex++
+		switch t.(type) {
+		case token.Accessor:
+			a := t.(token.Accessor)
+			p.accessor = &a
+		case token.NonAccessor:
+			n := t.(token.NonAccessor)
+			switch n {
+			case token.NonAccessorFinal:
+				p.final = true
+			case token.NonAccessorAbstract:
+				p.abstract = true
+			case token.NonAccessorNative:
+				p.native = true
+			case token.NonAccessorStatic:
+				p.static = true
+			case token.NonAccessorDeclaredSynchronized:
+				p.synchronized = true
+			case token.NonAccessorSynthetic:
+				p.synthetic = true
+			case token.NonAccessorBridge:
+				p.bridge = true
+			case token.NonAccessorVarArgs:
+				p.varargs = true
+			}
+		case token.Text:
+			stopParsing = true
+		}
+
+		if stopParsing {
+			break
+		}
 	}
 
-	if methodNameIndex >= len(currentLine) {
-		fmt.Println(currentLine)
+	if p.static && p.abstract {
+		return fmt.Errorf("a method cannot be both static and abstract at the same time")
 	}
 
-	if currentLine[methodNameIndex] == java.Static {
-		staticOrAbstract = java.Static
-		methodNameIndex++
-	} else if currentLine[methodNameIndex] == java.Abstract {
-		staticOrAbstract = java.Abstract
-		methodNameIndex++
+	if lastToken == nil {
+		return fmt.Errorf("last token is nil")
 	}
 
-	if currentLine[methodNameIndex] == smali.Final {
-		p.final = true
-		methodNameIndex++
+	// last token is always text
+	t, ok := (*lastToken).(token.Text)
+	if !ok {
+		return fmt.Errorf("last token is not token.Text")
 	}
 
-	if currentLine[methodNameIndex] == smali.Native {
-		p.native = true
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.DeclaredSynchronized {
-		p.synchronized = true
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.Bridge {
-		bridgeOrSynthetic = "//bridge"
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.Synthetic {
-		bridgeOrSynthetic += "//synthethic"
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.VarArgs {
-		p.varargs = true
-		methodNameIndex++
-	}
-
-	smaliMethod = currentLine[methodNameIndex]
+	smaliMethod := t.Value
+	javaMethod := ""
 
 	returnValue := ""
 	var arguments []string
 
 	if smaliMethod == "constructor" {
-		method = javaFile.ClassName
+		javaMethod = javaFile.ClassName
 	} else {
 		argumentsIndex := strings.Index(smaliMethod, "(")
 		returnValueIndex := strings.Index(smaliMethod, ")")
 
-		method = smaliMethod[0:argumentsIndex]
+		javaMethod = smaliMethod[0:argumentsIndex]
 		argumentsString := smaliMethod[argumentsIndex+1 : returnValueIndex]
 		returnValue = GetClassName(smaliMethod[returnValueIndex+1:])
 
@@ -90,12 +121,16 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	var line []string
 
-	if p.accessor != "" {
-		line = append(line, p.accessor)
+	if p.accessor != nil {
+		line = append(line, p.accessor.ToJava())
 	}
 
-	if staticOrAbstract != "" {
-		line = append(line, staticOrAbstract)
+	if p.static {
+		line = append(line, java.Static)
+	}
+
+	if p.abstract {
+		line = append(line, java.Abstract)
 	}
 
 	if p.synchronized {
@@ -110,10 +145,14 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 		line = append(line, java.Final)
 	}
 
-	line = append(line, returnValue, method, "(", strings.Join(arguments, ", "), ")", "{")
+	line = append(line, returnValue, javaMethod, "(", strings.Join(arguments, ", "), ")", "{")
 
-	if bridgeOrSynthetic != "" {
-		line = append(line, bridgeOrSynthetic)
+	if p.bridge {
+		line = append(line, "// bridge")
+	}
+
+	if p.synthetic {
+		line = append(line, "// synthetic")
 	}
 	javaFile.AddLine(line)
 
