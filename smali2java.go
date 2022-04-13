@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/alexeysoshin/smali2java/parser"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
+
+	"github.com/alexeysoshin/smali2java/parser"
 )
 
 const smaliExtension = ".smali"
@@ -17,7 +18,6 @@ const smaliExtension = ".smali"
 func main() {
 
 	pathToSmali := flag.String("path_to_smali", "./test_data/s.smali", "Path to your smali files")
-
 	flag.Parse()
 
 	parseSmaliFiles(*pathToSmali)
@@ -37,7 +37,8 @@ func parseSmaliFiles(path string) {
 		} else if filepath.Ext(path) != smaliExtension {
 			//log.Printf("Not a smali file, skipping: %s\n", path)
 		} else {
-			convertSmali(path, &wg)
+			wg.Add(1)
+			go convertSmali(path, &wg)
 		}
 
 		return nil
@@ -53,8 +54,6 @@ func convertSmali(path string, wg *sync.WaitGroup) {
 	if debug {
 		fmt.Printf("Processing %s\n", path)
 	}
-
-	wg.Add(1)
 
 	file, err := os.Open(path)
 	if err != nil {

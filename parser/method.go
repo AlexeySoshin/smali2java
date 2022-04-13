@@ -2,9 +2,10 @@ package parser
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/alexeysoshin/smali2java/java"
 	"github.com/alexeysoshin/smali2java/smali"
-	"strings"
 )
 
 type MethodParser struct {
@@ -16,6 +17,7 @@ type MethodParser struct {
 }
 
 func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
+
 	// Since they can't be both, we can use one variable
 	staticOrAbstract := ""
 	smaliMethod := ""
@@ -74,6 +76,13 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 
 	returnValue := ""
 	var arguments []string
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println(currentLine, "with methodname assumed as: ", smaliMethod)
+			panic(r)
+		}
+	}()
 
 	if smaliMethod == "constructor" {
 		method = javaFile.ClassName
