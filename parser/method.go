@@ -24,52 +24,59 @@ func (p *MethodParser) Parse(javaFile *JavaFile, currentLine Line) error {
 	bridgeOrSynthetic := ""
 	method := ""
 	methodNameIndex := 1
+	operatorsCount := len(currentLine)
 
 	if java.Modifiers[currentLine[methodNameIndex]] {
 		p.accessor = currentLine[methodNameIndex]
 		methodNameIndex++
 	}
 
+	for ; methodNameIndex < operatorsCount; methodNameIndex++ {
+		modificator := currentLine[methodNameIndex]
+
+		if modificator == java.Static {
+			staticOrAbstract = java.Static
+			continue
+		} else if modificator == java.Abstract {
+			staticOrAbstract = java.Abstract
+			continue
+		}
+
+		if modificator == smali.Final {
+			p.final = true
+			continue
+		}
+
+		if modificator == smali.Native {
+			p.native = true
+			continue
+		}
+
+		if modificator == smali.DeclaredSynchronized || modificator == smali.Synchronized {
+			p.synchronized = true
+			continue
+		}
+
+		if modificator == smali.Bridge {
+			bridgeOrSynthetic = "//bridge"
+			continue
+		}
+
+		if modificator == smali.Synthetic {
+			bridgeOrSynthetic += "//synthethic"
+			continue
+		}
+
+		if modificator == smali.VarArgs {
+			p.varargs = true
+			continue
+		}
+
+		break
+	}
+
 	if methodNameIndex >= len(currentLine) {
 		fmt.Println(currentLine)
-	}
-
-	if currentLine[methodNameIndex] == java.Static {
-		staticOrAbstract = java.Static
-		methodNameIndex++
-	} else if currentLine[methodNameIndex] == java.Abstract {
-		staticOrAbstract = java.Abstract
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.Final {
-		p.final = true
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.Native {
-		p.native = true
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.DeclaredSynchronized {
-		p.synchronized = true
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.Bridge {
-		bridgeOrSynthetic = "//bridge"
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.Synthetic {
-		bridgeOrSynthetic += "//synthethic"
-		methodNameIndex++
-	}
-
-	if currentLine[methodNameIndex] == smali.VarArgs {
-		p.varargs = true
-		methodNameIndex++
 	}
 
 	smaliMethod = currentLine[methodNameIndex]
