@@ -13,7 +13,7 @@ Why would you need it if there are tools like https://bytecodeviewer.com/? <br /
 * Allows you to use other command line tools on the output
 
 ## Prerequisites
-* Go 1.15+
+* Go 1.18+
 
 ## Building
 ```

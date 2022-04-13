@@ -7,6 +7,7 @@ import (
 
 func TestConvertSmali(t *testing.T) {
 	wg := &sync.WaitGroup{}
+	wg.Add(1)
 	convertSmali("./test_data/s.smali", wg)
 
 	wg.Wait()
@@ -14,6 +15,7 @@ func TestConvertSmali(t *testing.T) {
 
 func TestConvertSmali2(t *testing.T) {
 	wg := &sync.WaitGroup{}
+	wg.Add(1)
 	convertSmali("./test_data/o.smali", wg)
 
 	wg.Wait()
@@ -21,6 +23,7 @@ func TestConvertSmali2(t *testing.T) {
 
 func TestConvertSmaliFC(t *testing.T) {
 	wg := &sync.WaitGroup{}
+	wg.Add(1)
 	convertSmali("./test_data/fc.smali", wg)
 
 	wg.Wait()

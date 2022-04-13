@@ -2,7 +2,7 @@ language: go
 
 go_import_path: github.com/alexeysoshin/smali2java
 go:
- - "1.15"
+ - "1.18"
 install:
  - go install
 script:
