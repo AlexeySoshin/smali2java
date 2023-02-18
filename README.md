@@ -2,6 +2,10 @@
 [![Build Status](https://travis-ci.org/AlexeySoshin/smali2java.svg?branch=master)](https://travis-ci.org/AlexeySoshin/smali2java)
 [![codecov](https://codecov.io/gh/AlexeySoshin/smali2java/branch/master/graph/badge.svg)](https://codecov.io/gh/AlexeySoshin/smali2java)
 
+## Warning
+This project is in developement, it doesn't work well for now. It will probably don't work well if you use it on a big project. 
+
+## Introduction
 This project attempts to create a valid Java source code from disassembled code used by Dalvik <br />
 
 Main goal of this project is to validate how well your obfuscation strategy works, and what the attacker would be able to gather from your source.
